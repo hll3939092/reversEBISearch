@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:solr="http://www.springframework.org/schema/c"
+       xmlns:jpa="http://www.springframework.org/schema/data/solr"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc
+	   					   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	   					   http://www.springframework.org/schema/beans
+	   					   http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	   					   http://www.springframework.org/schema/context
+	   					   http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	   					   http://www.springframework.org/schema/aop
+	   					   http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd"
+       default-lazy-init="true">
+
+    <!-- 配置扫描controller -->
+    <context:component-scan base-package="cn.ncbsp.omicsdi.solr"/>
+
+    <aop:aspectj-autoproxy/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json</value>
+                    </list>
+                </property>
+                <property name="features">
+                    <list>
+                        <value>QuoteFieldNames</value>
+                        <value>WriteMapNullValue</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--<mvc:view-controller path="/" view-name="redirect:${baseUrl}/"/>-->
+
+    <mvc:default-servlet-handler/>
+    <context:annotation-config/>
+
+
+    <!-- 配置视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 默认编码 -->
+        <property name="defaultEncoding" value="utf-8"/>
+        <!-- 文件大小最大值 -->
+        <property name="maxUploadSize" value="10485760000"/>
+        <!-- 内存中的最大值 -->
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+
+    <!-- 配置验证码 -->
+    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg>
+                    <props>
+                        <!-- 图片边框 -->
+                        <prop key="kaptcha.border">no</prop>
+                        <!-- 图片宽度 -->
+                        <prop key="kaptcha.image.width">150</prop>
+                        <!-- 图片高度 -->
+                        <prop key="kaptcha.image.height">55</prop>
+                        <!-- 验证码背景颜色渐变，开始颜色 -->
+                        <prop key="kaptcha.background.clear.from">248,248,248</prop>
+                        <!-- 验证码背景颜色渐变，结束颜色 -->
+                        <prop key="kaptcha.background.clear.to">248,248,248</prop>
+                        <!-- 验证码的字符 -->
+                        <prop key="kaptcha.textproducer.char.string">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</prop>
+                        <!-- 验证码字体颜色 -->
+                        <prop key="kaptcha.textproducer.font.color">46,169,223</prop>
+                        <!-- 验证码的效果，水纹 -->
+                        <prop key="kaptcha.obscurificator.impl">com.google.code.kaptcha.impl.WaterRipple</prop>
+                        <!-- 验证码字体大小 -->
+                        <prop key="kaptcha.textproducer.font.size">35</prop>
+                        <!-- 验证码字数 -->
+                        <prop key="kaptcha.textproducer.char.length">6</prop>
+                        <!-- 验证码文字间距 -->
+                        <prop key="kaptcha.textproducer.char.space">2</prop>
+                        <!-- 验证码字体 -->
+                        <prop key="kaptcha.textproducer.font.names">new Font("Arial", 1, fontSize), new Font("Courier",
+                            1, fontSize)
+                        </prop>
+                        <!-- 不加噪声 -->
+                        <prop key="kaptcha.noise.impl">com.google.code.kaptcha.impl.NoNoise</prop>
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
+
+    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
+        <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
+        <property name="parser" ref="XMLResponseParser"></property>
+    </bean>
+
+    <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
+        <constructor-arg name="baseSolrUrl" value="http://127.0.0.1:8983/solr"></constructor-arg>
+    </bean>
+
+    <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
+        <constructor-arg name="solrClient" ref="solrClient"></constructor-arg>
+    </bean>
+
+    <jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />
+
+    <!-- solr服务器地址 -->
+    <!--<solr:solr-server id="solrServer" url="http://127.0.0.1:8080/solr" />-->
+    <!--&lt;!&ndash; solr模板，使用solr模板可对索引库进行CRUD的操作 &ndash;&gt;-->
+    <!--<bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">-->
+        <!--<constructor-arg ref="solrServer" />-->
+    <!--</bean>-->
+
+</beans>
