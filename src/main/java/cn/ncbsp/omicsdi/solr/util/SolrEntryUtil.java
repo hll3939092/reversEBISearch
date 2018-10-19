@@ -30,23 +30,39 @@ public class SolrEntryUtil {
             });
             solrEntry.setDatabase(database);
 
-            Set<String> setDbName = new HashSet<String>();
-            List<String> listDbKey = new ArrayList<>();
-            entry.getCrossReferences().getRef().forEach(reference -> {
-                setDbName.add(reference.getDbname());
-                listDbKey.add(reference.getDbkey());
-            });
-            solrEntry.setDbname(setDbName);
-            solrEntry.setDbkey(listDbKey);
+//            Set<String> setDbName = new HashSet<String>();
+//            List<String> listDbKey = new ArrayList<>();
+//            entry.getCrossReferences().getRef().forEach(reference -> {
+//                setDbName.add(reference.getDbname());
+//                listDbKey.add(reference.getDbkey());
+//            });
+//            solrEntry.setDbname(setDbName);
+//            solrEntry.setDbkey(listDbKey);
 
             Map<String,List<String>> additionalMap = new HashMap<>();
+
+            entry.getCrossReferences().getRef().forEach(reference -> {
+                if(null == additionalMap.get("additional_"+reference.getDbname())){
+                    List<String> listForMap = new ArrayList<>();
+                    listForMap.add(reference.getDbkey());
+                    additionalMap.put("additional_"+reference.getDbname(),listForMap);
+                }else {
+                    List<String> listField = additionalMap.get("additional_"+reference.getDbname());
+                    listField.add(reference.getDbkey());
+                    additionalMap.put("additional_"+reference.getDbname(),listField);
+                }
+            });
+
+
             entry.getAdditionalFields().getField().forEach(field -> {
-                if(null == additionalMap.get(field.getName())) {
+                if(null == additionalMap.get("additional_"+field.getName())) {
                     List<String> listForMap = new ArrayList<>();
                     listForMap.add(field.getValue());
                     additionalMap.put("additional_"+field.getName(),listForMap);
                 }else {
-                    additionalMap.get("additional_"+field.getName()).add(field.getValue());
+                    List<String> listField = additionalMap.get("additional_"+field.getName());
+                    listField.add(field.getValue());
+                    additionalMap.put("additional_"+field.getName(),listField);
                 }
             });
             solrEntry.setAdditionalFields(additionalMap);

@@ -1,7 +1,10 @@
 package cn.ncbsp.omicsdi.solr.controller;
 
 import cn.ncbsp.omicsdi.solr.model.Money;
-import cn.ncbsp.omicsdi.solr.services.IMoneyService;
+//import cn.ncbsp.omicsdi.solr.services.IMoneyService;
+import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
+import cn.ncbsp.omicsdi.solr.services.IDomainSearchService;
+import cn.ncbsp.omicsdi.solr.solrmodel.QueryResult;
 import cn.ncbsp.omicsdi.solr.util.SolrClientBuilderUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -26,10 +29,12 @@ public class DatasetController {
 
     private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
 
-
-
     @Autowired
-    IMoneyService moneyService;
+    IDomainSearchService domainSearchService;
+
+
+//    @Autowired
+//    IMoneyService moneyService;
 
     // EBI Search RESTful Web Services R.
     // Top terms
@@ -58,34 +63,87 @@ public class DatasetController {
 
     // Domain search
     @RequestMapping(value = "/{domain}",method = RequestMethod.GET)
-    public String getDomains(
+    public QueryResult getDomains(
             @PathVariable(value = "domain") String domain,
             @RequestParam(value = "query",required = false, defaultValue = "") String query,
-            @RequestParam(value = "size",required = false, defaultValue = "20") int size,
-            @RequestParam(value = "start",required = false, defaultValue = "0") int start,
             @RequestParam(value = "fields",required = false, defaultValue = "") String fields,
+            @RequestParam(value = "start",required = false, defaultValue = "0") int start,
+            @RequestParam(value = "size",required = false, defaultValue = "10") int size,
+            @RequestParam(value = "facetcount",required = false, defaultValue = "20") int facetcount,
             @RequestParam(value = "sortfield",required = false, defaultValue = "") String sortfield,
             @RequestParam(value = "order",required = false, defaultValue = "") String order,
+            @RequestParam(value = "format",required = false, defaultValue = "JSON") String format,
             @RequestParam(value = "sort",required = false, defaultValue = "") String sort,
-            @RequestParam(value = "fieldurl",required = false, defaultValue = "") boolean fieldurl,
-            @RequestParam(value = "viewurl",required = false, defaultValue = "") boolean viewurl,
+            @RequestParam(value = "fieldurl",required = false, defaultValue = "false") boolean fieldurl,
+            @RequestParam(value = "viewurl",required = false, defaultValue = "false") boolean viewurl,
             @RequestParam(value = "facets",required = false, defaultValue = "") String facets,
             @RequestParam(value = "facetfields",required = false, defaultValue = "") String facetfields,
-            @RequestParam(value = "facetcount",required = false, defaultValue = "") int facetcount,
-            @RequestParam(value = "facetsdepth",required = false, defaultValue = "") int facetsdepth,
+            @RequestParam(value = "facetsdepth",required = false, defaultValue = "0") int facetsdepth,
             @RequestParam(value = "feedtitle",required = false, defaultValue = "") String feedtitle,
             @RequestParam(value = "feedmaxdays",required = false, defaultValue = "") String feedmaxdays,
             @RequestParam(value = "feedmaxdaysfield",required = false, defaultValue = "") String feedmaxdaysfield,
             @RequestParam(value = "hlfields",required = false, defaultValue = "") String hlfields,
             @RequestParam(value = "hlpretag",required = false, defaultValue = "") String hlpretag,
             @RequestParam(value = "hlposttag",required = false, defaultValue = "") String hlposttag,
-            @RequestParam(value = "format",required = false, defaultValue = "JSON") String format,
             @RequestParam(value = "entryattrs",required = false, defaultValue = "") String entryattrs
 
     ) {
-        List<Money> lmoney = moneyService.getMoneyByName(domain);
-        String money = lmoney.get(0).toString();
-        return money;
+        QueryModel queryModel = new QueryModel();
+        queryModel.setDomain(domain);
+
+        if(fields.equals("") || null == fields) {
+            queryModel.setFields(new String[]{});
+        } else if (fields.indexOf(",") <= 0) {
+            queryModel.setFields(new String[]{fields});
+        } else {
+            String[] fieldCollection = fields.split(",");
+            queryModel.setFields(fieldCollection);
+        }
+
+        queryModel.setStart(start);
+        queryModel.setSize(size);
+        queryModel.setFacetcount(facetcount);
+
+        queryModel.setSortfield(sortfield);
+        queryModel.setOrder(order);
+        queryModel.setFormat(format);
+        queryModel.setSort(sort);
+        queryModel.setFieldurl(fieldurl);
+        queryModel.setViewurl(viewurl);
+
+        if(facets.equals("") || null == facets) {
+            queryModel.setFacets(new String[]{});
+        } else if (facets.indexOf(",") <= 0) {
+            queryModel.setFacets(new String[]{facets});
+        } else {
+            String[] facetsCollection = facets.split(",");
+            queryModel.setFacets(facetsCollection);
+        }
+
+        if(facetfields.equals("") || null == facetfields) {
+            queryModel.setFacetfields(new String[]{});
+        } else if (facetfields.indexOf(",") <= 0) {
+            queryModel.setFacetfields(new String[]{facetfields});
+        } else {
+            String[] facetfieldsCollection = facetfields.split(",");
+            queryModel.setFacetfields(facetfieldsCollection);
+        }
+
+        queryModel.setFacetsdepth(facetsdepth);
+        queryModel.setFeedtitle(feedtitle);
+        queryModel.setFeedmaxdays(feedmaxdays);
+        queryModel.setFeedmaxdaysfield(feedmaxdaysfield);
+        queryModel.setHlfields(hlfields);
+        queryModel.setHlpretag(hlpretag);
+        queryModel.setHlposttag(hlposttag);
+        queryModel.setEntryattrs(entryattrs);
+
+        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+
+
+//        List<Money> lmoney = moneyService.getMoneyByName(domain);
+//        String money = lmoney.get(0).toString();
+        return queryResult;
     }
 
     // Entry retrieval

@@ -19,6 +19,7 @@
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr"/>
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr.repo"/>
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr.controller"/>
+    <context:component-scan base-package="cn.ncbsp.omicsdi.solr.scheduler"/>
     <jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />
 
     <aop:aspectj-autoproxy/>
@@ -108,7 +109,7 @@
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <property name="parser" ref="XMLResponseParser"></property>
+        <!--<property name="parser" ref="XMLResponseParser"></property>-->
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">

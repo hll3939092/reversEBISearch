@@ -19,5 +19,6 @@
     </bean>
 
     <import resource="../springMVC/spring-mvc-sso.xml"/>
+    <!--<import resource="../springMVC/quartzJob.xml"/>-->
 
 </beans>

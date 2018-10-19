@@ -48,11 +48,11 @@ public class SolrEntry {
 //    @Field
 //    String submission;
 
-    @Field
-    Set<String> dbname;
-
-    @Field
-    List<String> dbkey;
+//    @Field
+//    Set<String> dbname;
+//
+//    @Field(value = "dbkey")
+//    List<String> dbkey;
 
     @Field(value = "additional_*")
     Map<String,List<String>> additionalFields;
@@ -152,8 +152,6 @@ public class SolrEntry {
         this.dateUpdated = dateUpdated;
         this.dateCreation = dateCreation;
         this.dateOthers = dateOthers;
-        this.dbname = dbname;
-        this.dbkey = dbkey;
         this.additionalFields = additionalFields;
     }
 
@@ -229,21 +227,21 @@ public class SolrEntry {
         this.dateOthers = dateOthers;
     }
 
-    public Set<String> getDbname() {
-        return dbname;
-    }
-
-    public void setDbname(Set<String> dbname) {
-        this.dbname = dbname;
-    }
-
-    public List<String> getDbkey() {
-        return dbkey;
-    }
-
-    public void setDbkey(List<String> dbkey) {
-        this.dbkey = dbkey;
-    }
+//    public Set<String> getDbname() {
+//        return dbname;
+//    }
+//
+//    public void setDbname(Set<String> dbname) {
+//        this.dbname = dbname;
+//    }
+//
+//    public List<String> getDbkey() {
+//        return dbkey;
+//    }
+//
+//    public void setDbkey(List<String> dbkey) {
+//        this.dbkey = dbkey;
+//    }
 
 //    public List<String> getOmicsType() {
 //        return omicsType;
@@ -434,8 +432,6 @@ public class SolrEntry {
                 ", dateUpdated='" + dateUpdated + '\'' +
                 ", dateCreation='" + dateCreation + '\'' +
                 ", dateOthers='" + dateOthers + '\'' +
-                ", dbname=" + dbname +
-                ", dbkey=" + dbkey +
                 ", additionalFields=" + additionalFields +
                 '}';
     }
