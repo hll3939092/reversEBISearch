@@ -1,23 +1,31 @@
 import cn.ncbsp.omicsdi.solr.model.Database;
 import cn.ncbsp.omicsdi.solr.model.Money;
 //import cn.ncbsp.omicsdi.solr.repo.MoneyRepo;
-import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
+import cn.ncbsp.omicsdi.solr.model.Suggestion;
+import cn.ncbsp.omicsdi.solr.model.Suggestions;
+import cn.ncbsp.omicsdi.solr.queryModel.*;
 import cn.ncbsp.omicsdi.solr.repo.SolrEntryRepo;
-import cn.ncbsp.omicsdi.solr.services.IDatabaseService;
-import cn.ncbsp.omicsdi.solr.services.IDomainSearchService;
-import cn.ncbsp.omicsdi.solr.services.ISolrEntryService;
+import cn.ncbsp.omicsdi.solr.services.*;
+import cn.ncbsp.omicsdi.solr.solrTool.SolrSuggestTemplate;
 import cn.ncbsp.omicsdi.solr.solrmodel.SolrEntry;
 import cn.ncbsp.omicsdi.solr.solrmodel.TestModel;
 import cn.ncbsp.omicsdi.solr.util.SolrQueryBuilder;
 import cn.ncbsp.omicsdi.solr.util.XmlHelper;
+import com.alibaba.fastjson.JSON;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.request.LukeRequest;
+import org.apache.solr.client.solrj.request.schema.SchemaRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SuggesterResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
+import org.apache.solr.common.params.*;
+import org.apache.solr.common.util.NamedList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +33,20 @@ import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.SolrResultPage;
+import org.springframework.data.solr.core.query.result.TermsPage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sun.misc.GC;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations ="classpath*:spring/applicationContext-sso.xml")
@@ -359,7 +374,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
     public void testUtils2() {
         QueryModel queryModel = new QueryModel();
         queryModel.setSize(5);
-        queryModel.setQuery("id:PXD000025");
+        queryModel.setQuery("*:*");
         queryModel.setFacets(new String[] {"id"});
         SimpleFacetQuery simpleFacetQuery = SolrQueryBuilder.buildSimpleFacetQuery(queryModel);
         FacetPage<SolrEntry> facetPage = solrTemplate.queryForFacetPage("omicsdi",simpleFacetQuery,SolrEntry.class);
@@ -380,5 +395,370 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
         domainSearchService.getQueryResult(queryModel);
     }
 
+
+    @Test
+    public void testAllField() {
+        try {
+            NamedList<Object> namedList = solrClient.request(new SchemaRequest.Fields(),"omicsdi");
+            NamedList<Object> namedList2 = solrClient.request(new SchemaRequest.DynamicFields(),"omicsdi");
+            NamedList<Object> namedList3 = solrClient.request(new LukeRequest(),"omicsdi");
+
+            Object o = namedList3.get("fields");
+            NamedList<Map<String,String>> nl = (NamedList<Map<String, String>>) o;
+
+            ArrayList<String> arr = new ArrayList<String>();
+
+            for(int i = 0;i<nl.size();i++) {
+                arr.add(nl.getName(i));
+            }
+            System.out.println("ok");
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Autowired
+    private SolrSuggestTemplate solrSuggestTemplate;
+
+    @Test
+    public void testSuggest() {
+//
+        SimpleQuery simpleQuery = new SimpleQuery("a");
+        simpleQuery.setRequestHandler("/suggest");
+//        SolrResultPage<Suggestions> solrEntrySolrResultPage = solrTemplate.query("omicsdi",simpleQuery,Suggestions.class);
+        SolrResultPage<Suggestions> solrResultPage = solrSuggestTemplate.query("omicsdi",simpleQuery,Suggestions.class);
+
+        System.out.println("a?");
+
+
+
+
+
+//        System.out.println("a?");
+//
+//        SimpleTermsQuery simpleTermsQuery = new SimpleTermsQuery();
+//        simpleTermsQuery.addCriteria(new Criteria().expression("a"));
+//        TermsPage termsPage = solrTemplate.queryForTermsPage("omicsdi",simpleTermsQuery);
+        System.out.print("a?");
+
+//        SimpleHighlightQuery
+
+
+//        SolrQuery solrQuery = new SolrQuery();
+//        solrQuery.setRequestHandler("/suggest");
+//        solrQuery.set("q","a");
+//        try {
+//            QueryResponse queryResponse = solrClient.query("omicsdi",solrQuery);
+//            System.out.println("ok?");
+//        } catch (SolrServerException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("ok?");
+//        SimpleQuery simpleQuery = new SimpleQuery();
+//        simpleQuery.setRequestHandler("/suggest");
+//        SolrResultPage<Suggestions> solrEntrySolrResultPage = (SolrResultPage<Suggestions>) solrTemplate.queryForPage("omicsdi",simpleQuery, Suggestions.class);
+////        SolrResultPage<Suggestions> solrEntrySolrResultPage = solrTemplate.query("omicsdi",simpleQuery, Suggestions.class);
+
+//        SuggesterResponse suggesterResponse = new SuggesterResponse();
+//
+//        SimpleTermsQuery simpleTermsQuery = new SimpleTermsQuery();
+//        simpleTermsQuery.setRequestHandler("/suggest");
+//        simpleTermsQuery.addCriteria(new Criteria().expression("q=an"));
+//        TermsPage termsPage = solrTemplate.queryForTermsPage("omicsdi",simpleTermsQuery);
+//        SolrResultPage<Suggestions> solrEntrySolrResultPage = solrTemplate.query("omicsdi",simpleQuery, Suggestions.class);
+//        System.out.println("a?");
+//
+//        SolrQuery solrQuery = new SolrQuery();
+//        solrQuery.setRequestHandler("/suggest");
+//        solrQuery.set("q","a");
+//
+//        try {
+//            QueryResponse queryResponse = solrClient.query("omicsdi",solrQuery);
+//            SuggesterResponse suggesterResponse = queryResponse.getSuggesterResponse();
+//            Map<String, List<Suggestion>> mapSuggest = suggesterResponse.getSuggestions();
+//            System.out.println("a");
+//        } catch (SolrServerException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    @Autowired
+    IAutocompleteService autocompleteService;
+
+    @Test
+    public void testSuggestService() {
+        Suggestions suggestions = autocompleteService.getSuggestions("omicsdi","an", Suggestion.class);
+        System.out.println("a");
+    }
+
+
+    @Test
+    public void testRegex() {
+        String regex = "[a-zA-Z0-9]+";
+        Boolean b = Pattern.matches(regex,"asdf9087sdfKHE");
+        System.out.println(b);
+
+    }
+
+    @Autowired
+    ISolrCustomService solrCustomService;
+
+    @Test
+    public void testSuggestionService () {
+        Map<String,String[]> map = new HashMap<>();
+        map.put("q",new String[]{"a"});
+        solrCustomService.getSuggestResult("omicsdi",map);
+    }
+
+
+    @Test
+    public void testMoreLikeThisSerivce() {
+        Map<String,String[]> map = new HashMap<>();
+        map.put("q", new String[]{"id:PXD002734"});
+        solrCustomService.getSimilarResult("omicsdi", map);
+    }
+
+
+    @Test
+    public void testAPI() {
+        SolrQuery solrQuery = new SolrQuery();
+//        FacetParams
+
+        Map<String,String[]> paramMap = new HashMap<>();
+
+        String[] fields = new String[]{"description", "database"};
+        paramMap.put(TermsParams.TERMS_FIELD, fields);
+
+        solrCustomService.getFrequentlyTerms("omicsdi", paramMap);
+    }
+
+    @Autowired
+    ISolrFacetService solrFacetService;
+
+
+    @Test
+    public void testhihihi() {
+        SolrQuery solrQuery = new SolrQuery();
+        solrQuery.set("q","id:PXD002734");
+        solrQuery.setFacet(true);
+        solrQuery.addFacetField("acc");
+        QueryResponse queryResponse = null;
+        try {
+            queryResponse = solrClient.query("omicsdi", solrQuery);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("hihihihihihi");
+    }
+
+    @Test
+    public void testfacetImple() {
+//        Map<String,String[]> paramMap = new HashMap<>();
+//        paramMap.put("q", new String[]{"*:*"});
+//        paramMap.put(FacetParams.FACET, new String[]{"database"});
+//        solrFacetService.getFacetEntriesByDomains("omicsdi", paramMap);
+        FacetQuery facetQuery = new SimpleFacetQuery(new Criteria().expression("*:*"));
+        FacetOptions facetOptions = new FacetOptions();
+        facetOptions.addFacetOnField("database");
+        facetQuery.setFacetOptions(facetOptions);
+
+//        FacetPage<SolrEntry> facetPage = solrTemplate.queryForFacetPage("omicsdi",simpleFacetQuery,SolrEntry.class);
+        FacetPage<SolrEntry> facetPage =  solrTemplate.queryForFacetPage("omicsdi", facetQuery, SolrEntry.class);
+
+        System.out.println("x");
+    }
+
+
+    @Test
+    public void TestParam() {
+        SolrQuery solrQuery = new SolrQuery();
+        solrQuery.set(CommonParams.Q, "*:*");
+        QueryResponse queryResponse = null;
+        try {
+            queryResponse = solrClient.query("omicsdi", solrQuery);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("ok");
+    }
+
+    @Test
+    public void testInvoke() {
+//        Field[] fields = FacetParams.class.getDeclaredFields();
+//        for(Field field : fields) {
+//            field.setAccessible(true);
+//            String name = field.getName();
+//        }
+//
+//        FacetParams.class.getMethods();
+
+//        Field[] fields = QueryModel.class.getFields();
+//        Method[] methods = QueryModel.class.getMethods();
+        QueryModel queryModel = new QueryModel();
+        queryModel.setDomain("asdfdsa");
+        queryModel.setQuery("hihihihihi");
+
+        try {
+            Field field = queryModel.getClass().getDeclaredField("domain");
+            field.setAccessible(true);
+            String str = (String) field.get(queryModel);
+            System.out.println(str);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+//        Class clazz = queryModel.getClass();
+//        Field[] fields = clazz.getFields();
+//        for(Field field : fields) {
+//            try {
+//                Method method = clazz.getMethod("get" + field.getName());
+//                String value = (String) method.invoke(queryModel);
+//                System.out.println(value);
+//            } catch (NoSuchMethodException e) {
+//                e.printStackTrace();
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            } catch (InvocationTargetException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+
+//        try {
+//            Class clazz = Class.forName(queryModel.getClass().getName());
+//            Method[] methods = clazz.getMethods();
+//            Field[] fields = clazz.getFields();
+//
+//
+//            for(Field field : fields) {
+//                Method method = clazz.getMethod("get" + field.getName());
+//                String name = (String) method.invoke(clazz.newInstance());
+//                System.out.println(name);
+//            }
+//
+//
+//            for(Method method : methods) {
+//
+//            }
+////            clazz.getMethod()
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+
+    @Test
+    public void testAutoSolr() {
+        String str = FacetParams.FACET;
+        String str2 = CommonParams.Q;
+        System.out.println(QueryModel.class.getName());
+    }
+
+
+    @Test
+    public void testFacetImpl() {
+        Map<String, String[]> paramMap = new HashMap<>();
+        paramMap.put("facetfields", new String[]{"TAXONOMY"});
+        paramMap.put("database", new String[] {"Pride"});
+        paramMap.put("q",new String[]{"*:*"});
+        solrFacetService.getFacetEntriesByDomains("omicsdi",paramMap);
+    }
+
+    @Test
+    public void TT() {
+        String str = "domain_source:(arrayexpress-repository OR atlas-experiments OR biomodels OR dbgap OR ega OR eva OR geo OR gnps OR gpmdb OR jpost OR lincs OR massive OR metabolights_dataset OR metabolome_express OR metabolomics_workbench OR omics_ena_project OR paxdb OR peptide_atlas OR pride)";
+        String[] str1 = str.substring(15,str.length()-1).split(" OR ");
+        System.out.println(str1);
+    }
+
+
+    @Test
+    public void autoQueryBuilder() {
+
+        SimpleQueryModel simpleQueryModel = new SimpleQueryModel();
+        simpleQueryModel.setQ("id:PXD002734"+" "+SimpleParams.OR_OPERATOR+" "+"id:PXD002565");
+
+
+//        SolrQuery solrQuery = new SolrQuery();
+//        solrQuery.setQuery("id:PXD002734"+" "+SimpleParams.OR_OPERATOR+" "+"id:PXD002565");
+////        solrQuery.setParam(CommonParams.Q, "id:PXD001224 OR PXD002734");
+////        solrQuery.set(CommonParams.Q, new String[]{"id:PXD011618 OR PXD021618"});
+////        solrQuery.set(CommonParams.Q, "id:PXD001224 OR PXD002734");
+////        solrQuery.add(CommonParams.Q, new String[]{"id:PXD002734","id:PXD002565"});
+////        solrQuery.add(CommonParams.Q, new String[]{"id:PXD002565"});
+////        solrQuery.set("id", new String[]{"*"});
+////        solrQuery.set("database", new String[]{"Pride","Jpost"});
+//        QueryResponse queryResponse = null;
+//        try {
+//            queryResponse = solrClient.query("omicsdi", solrQuery);
+//        } catch (SolrServerException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("ok");
+    }
+
+    @Test
+    public void testInvoke2() {
+        IQModel iqModel = new SimpleQueryModel();
+        SolrQuery solrQuery = new SolrQuery();
+        Field[] fields = iqModel.getClass().getDeclaredFields();
+        cn.ncbsp.omicsdi.solr.queryModel.SolrQueryBuilder.buildQuery(iqModel, solrQuery, fields);
+//        cn.ncbsp.omicsdi.solr.queryModel.SolrQueryBuilder.buildSolrQuery(iqModel);
+        System.out.println("x");
+    }
+
+    @Test
+    public void newUtils() {
+        IQModel iqModel = new SimpleQueryModel();
+        ((SimpleQueryModel) iqModel).setQ("*:*");
+        SolrQuery solrQuery = cn.ncbsp.omicsdi.solr.queryModel.SolrQueryBuilder.buildSolrQuery(iqModel);
+        FacetQueryModel facetQueryModel = new FacetQueryModel();
+//        facetQueryModel.setFacet("true");
+        facetQueryModel.setFacet_field("database,id");
+        solrQuery = cn.ncbsp.omicsdi.solr.queryModel.SolrQueryBuilder.buildAdvancedSolrQuery(facetQueryModel, solrQuery);
+        QueryResponse queryResponse = null;
+        try {
+            queryResponse = solrClient.query("omicsdi", solrQuery);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("x");
+    }
+
+
+    @Test
+    public void testFinalStatic() {
+        MLTQueryModel mltQueryModel = new MLTQueryModel();
+        Field[] fields = mltQueryModel.getClass().getDeclaredFields();
+        for(Field field: fields) {
+            System.out.println(field.getName());
+        }
+        System.out.println("xxx");
+    }
 
 }

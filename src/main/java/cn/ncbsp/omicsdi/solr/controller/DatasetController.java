@@ -1,17 +1,32 @@
 package cn.ncbsp.omicsdi.solr.controller;
 
+import cn.ncbsp.omicsdi.solr.constant.Constants;
+import cn.ncbsp.omicsdi.solr.constant.FieldConstants;
+import cn.ncbsp.omicsdi.solr.model.Domain;
+import cn.ncbsp.omicsdi.solr.model.DomainList;
 import cn.ncbsp.omicsdi.solr.model.Money;
 //import cn.ncbsp.omicsdi.solr.services.IMoneyService;
+import cn.ncbsp.omicsdi.solr.model.Suggestions;
 import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
+import cn.ncbsp.omicsdi.solr.services.IAutocompleteService;
 import cn.ncbsp.omicsdi.solr.services.IDomainSearchService;
-import cn.ncbsp.omicsdi.solr.solrmodel.QueryResult;
+import cn.ncbsp.omicsdi.solr.services.ISolrCustomService;
+import cn.ncbsp.omicsdi.solr.services.ISolrFacetService;
+import cn.ncbsp.omicsdi.solr.services.Impl.AutocompleteServiceImpl;
+import cn.ncbsp.omicsdi.solr.solrmodel.*;
+import cn.ncbsp.omicsdi.solr.util.ParamStringUtil;
 import cn.ncbsp.omicsdi.solr.util.SolrClientBuilderUtils;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.impl.XMLResponseParser;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.Suggestion;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.MoreLikeThisParams;
+import org.apache.solr.common.params.TermsParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +34,14 @@ import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.tags.Param;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping(value = "/")
@@ -32,36 +52,59 @@ public class DatasetController {
     @Autowired
     IDomainSearchService domainSearchService;
 
+    @Autowired
+    IAutocompleteService autocompleteService;
+
+    @Autowired
+    ISolrCustomService solrCustomService;
+
+    @Autowired
+    ISolrFacetService solrFacetService;
+
 
 //    @Autowired
 //    IMoneyService moneyService;
 
     // EBI Search RESTful Web Services R.
     // Top terms
+
+    // @return TermResult
+    // 可以使用 对应DatasetWSClient getFrequentlyTerms 方法
+    @ApiOperation(value="DatasetWSClient getFrequentlyTerms")
     @RequestMapping(value = "/{domain}/topterms/{fieldid}")
-    public String getFrequentlyTerms (
+    public TermResult getFrequentlyTerms (
             @PathVariable(value = "domain") String domain,
-            @PathVariable(value = "fieldid") String fieldid,
-            @RequestParam(value = "size", required = false, defaultValue = "20") int size,
-            @RequestParam(value = "excludes",required = false, defaultValue = "") String excludes,
-            @RequestParam(value = "excludesets", required = false, defaultValue = "") String excludesets,
-            @RequestParam(value = "format", required = true, defaultValue = "JSON") String format
+            @PathVariable(value = "fieldid") String fieldid
     ) {
-        return domain+"2";
+        Map<String,String[]> paramMap = new HashMap<>();
+
+        // term fields
+        String[] fields = fieldid.split(",");
+        paramMap.put(TermsParams.TERMS_FIELD, fields);
+
+
+        TermResult termResult = solrCustomService.getFrequentlyTerms(domain, paramMap);
+
+        return termResult;
     }
 
 
 
     // All EBI search
-    public String getAllEBISearch(
-            @RequestParam(value = "query", required = false, defaultValue = "20") int query,
-            @RequestParam(value = "format",required = false, defaultValue = "") String format,
-            @RequestParam(value = "excludezero", required = false, defaultValue = "") String excludezero
-    ) {
-        return "ok";
-    }
+//    @RequestMapping(value = "/")
+//    public String getAllEBISearch(
+//            @RequestParam(value = "query", required = false, defaultValue = "20") int query,
+//            @RequestParam(value = "format",required = false, defaultValue = "") String format,
+//            @RequestParam(value = "excludezero", required = false, defaultValue = "") String excludezero
+//    ) {
+//        return "ok";
+//    }
 
     // Domain search
+
+    // 对应DatasetWsClient getDatasets
+    // sortfield+order 形成排序
+    @ApiOperation(value="DatasetWSClient getDatasets")
     @RequestMapping(value = "/{domain}",method = RequestMethod.GET)
     public QueryResult getDomains(
             @PathVariable(value = "domain") String domain,
@@ -73,101 +116,184 @@ public class DatasetController {
             @RequestParam(value = "sortfield",required = false, defaultValue = "") String sortfield,
             @RequestParam(value = "order",required = false, defaultValue = "") String order,
             @RequestParam(value = "format",required = false, defaultValue = "JSON") String format,
-            @RequestParam(value = "sort",required = false, defaultValue = "") String sort,
-            @RequestParam(value = "fieldurl",required = false, defaultValue = "false") boolean fieldurl,
-            @RequestParam(value = "viewurl",required = false, defaultValue = "false") boolean viewurl,
-            @RequestParam(value = "facets",required = false, defaultValue = "") String facets,
-            @RequestParam(value = "facetfields",required = false, defaultValue = "") String facetfields,
-            @RequestParam(value = "facetsdepth",required = false, defaultValue = "0") int facetsdepth,
-            @RequestParam(value = "feedtitle",required = false, defaultValue = "") String feedtitle,
-            @RequestParam(value = "feedmaxdays",required = false, defaultValue = "") String feedmaxdays,
-            @RequestParam(value = "feedmaxdaysfield",required = false, defaultValue = "") String feedmaxdaysfield,
-            @RequestParam(value = "hlfields",required = false, defaultValue = "") String hlfields,
-            @RequestParam(value = "hlpretag",required = false, defaultValue = "") String hlpretag,
-            @RequestParam(value = "hlposttag",required = false, defaultValue = "") String hlposttag,
-            @RequestParam(value = "entryattrs",required = false, defaultValue = "") String entryattrs
+            @RequestParam(value = "sort",required = false, defaultValue = "") String sort
+//            @RequestParam(value = "domain_source",required = false, defaultValue = "") String domainSource,
+//            @RequestParam(value = "facetfields",required = false, defaultValue = "") String facetfields
 
     ) {
-        QueryModel queryModel = new QueryModel();
-        queryModel.setDomain(domain);
+//        if(StringUtils.isEmpty(facetfields)) {
+            QueryModel queryModel = new QueryModel();
+            queryModel.setDomain(domain);
+            queryModel.setQuery(query);
+            queryModel.setFields(ParamStringUtil.splitString(fields));
+            queryModel.setFacets(ParamStringUtil.splitString(fields));
+            queryModel.setStart(start);
+            queryModel.setSize(size);
+            queryModel.setFacetcount(facetcount);
 
-        if(fields.equals("") || null == fields) {
-            queryModel.setFields(new String[]{});
-        } else if (fields.indexOf(",") <= 0) {
-            queryModel.setFields(new String[]{fields});
-        } else {
-            String[] fieldCollection = fields.split(",");
-            queryModel.setFields(fieldCollection);
-        }
+            queryModel.setSortfield(sortfield);
+            queryModel.setOrder(order);
+            queryModel.setFormat(format);
+            queryModel.setSort(sort);
 
-        queryModel.setStart(start);
-        queryModel.setSize(size);
-        queryModel.setFacetcount(facetcount);
-
-        queryModel.setSortfield(sortfield);
-        queryModel.setOrder(order);
-        queryModel.setFormat(format);
-        queryModel.setSort(sort);
-        queryModel.setFieldurl(fieldurl);
-        queryModel.setViewurl(viewurl);
-
-        if(facets.equals("") || null == facets) {
-            queryModel.setFacets(new String[]{});
-        } else if (facets.indexOf(",") <= 0) {
-            queryModel.setFacets(new String[]{facets});
-        } else {
-            String[] facetsCollection = facets.split(",");
-            queryModel.setFacets(facetsCollection);
-        }
-
-        if(facetfields.equals("") || null == facetfields) {
-            queryModel.setFacetfields(new String[]{});
-        } else if (facetfields.indexOf(",") <= 0) {
-            queryModel.setFacetfields(new String[]{facetfields});
-        } else {
-            String[] facetfieldsCollection = facetfields.split(",");
-            queryModel.setFacetfields(facetfieldsCollection);
-        }
-
-        queryModel.setFacetsdepth(facetsdepth);
-        queryModel.setFeedtitle(feedtitle);
-        queryModel.setFeedmaxdays(feedmaxdays);
-        queryModel.setFeedmaxdaysfield(feedmaxdaysfield);
-        queryModel.setHlfields(hlfields);
-        queryModel.setHlpretag(hlpretag);
-        queryModel.setHlposttag(hlposttag);
-        queryModel.setEntryattrs(entryattrs);
-
-        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+            QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
 
 
 //        List<Money> lmoney = moneyService.getMoneyByName(domain);
 //        String money = lmoney.get(0).toString();
-        return queryResult;
+            return queryResult;
+//        } else {
+//
+//            Map<String, String[]> paramMap = new HashMap<>();
+//            String[] databases = query.substring(15,query.length()-1).split(" OR ");
+//            paramMap.put("databases", databases);
+//
+//            String[] facetsfield = facetfields.split(",");
+//            paramMap.put("facetfields", facetsfield);
+//
+//            paramMap.put("facetcount", new String[]{String.valueOf(facetcount)});
+//
+//            FacetList facetList = solrFacetService.getFacetEntriesByDomains(domain, paramMap);
+//
+//
+//            return null;
+//        }
+
     }
 
+    @ApiOperation(value="FacetWSClient getFacet")
+    @RequestMapping(value = "/{domain}/facet",method = RequestMethod.GET)
+    public FacetList getFacetDomains(
+            @PathVariable(value = "domain") String domain,
+            @RequestParam(value = "query",required = false, defaultValue = "") String query,
+            @RequestParam(value = "fields",required = false, defaultValue = "") String fields,
+            @RequestParam(value = "start",required = false, defaultValue = "0") int start,
+            @RequestParam(value = "size",required = false, defaultValue = "10") int size,
+            @RequestParam(value = "facetcount",required = false, defaultValue = "20") int facetcount,
+            @RequestParam(value = "sortfield",required = false, defaultValue = "") String sortfield,
+            @RequestParam(value = "order",required = false, defaultValue = "") String order,
+            @RequestParam(value = "format",required = false, defaultValue = "JSON") String format,
+            @RequestParam(value = "sort",required = false, defaultValue = "") String sort,
+            @RequestParam(value = "facetfields",required = false, defaultValue = "") String facetfields
+    ) {
+        Map<String, String[]> paramMap = new HashMap<>();
+        String[] databases = query.substring(15,query.length()-1).split(" OR ");
+        if(databases.length < 1) {
+            databases = new String[]{"*"};
+        }
+        paramMap.put("databases", databases);
+
+        String[] facetsfield = facetfields.split(",");
+        if(databases.length < 1) {
+            // todo exception
+        }
+        paramMap.put("facetfields", facetsfield);
+
+        paramMap.put("facetcount", new String[]{String.valueOf(facetcount)});
+
+        FacetList facetList = solrFacetService.getFacetEntriesByDomains(domain, paramMap);
+        return facetList;
+    }
+
+    // 对应DomainWsClient getDomainByName
+    // todo Domainlist 数据不完整，缺少关键数据
+    @RequestMapping(value = "/{domain}", method = RequestMethod.POST)
+    public DomainList getDomainList (@PathVariable(value = "domain") String domain) {
+        QueryModel queryModel = new QueryModel();
+        queryModel.setQuery("*:*");
+        queryModel.setFacets(new String[]{"database"});
+        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+
+        Facet[] facets = queryResult.getFacets();
+        FacetValue[] facetValues = null;
+        for (Facet facet : facets ) {
+            if(facet.getId().equals("database")) {
+                facetValues = facet.getFacetValues();
+            }
+        }
+        DomainList domainList = new DomainList();
+        List<Domain> domains = new ArrayList<Domain>();
+
+        for(FacetValue facetValue : facetValues) {
+            Domain domainS = new Domain();
+            domainS.setId(facetValue.getLabel());
+            domainS.setName(facetValue.getLabel());
+            domains.add(domainS);
+        }
+
+        Domain[] domainCollection = new Domain[domains.size()];
+        domainCollection = domains.toArray(domainCollection);
+
+        domainList.setList(domainCollection);
+
+        return domainList;
+    }
+
+    // 对应DatasetWsClient getDatasetsById
     // Entry retrieval
-    @RequestMapping(value = "/{domain}/entry/{entryids}")
-    public String getEntries(
+    @RequestMapping(value = "/{domain}/entry/{entryids}", method = RequestMethod.GET)
+    public QueryResult getEntries(
             @PathVariable(value = "domain") String domain,
             @PathVariable(value = "entryids") String entryids,
             @RequestParam(value = "fields",required = false, defaultValue = "") String fields,
-            @RequestParam(value = "fieldurl",required = false, defaultValue = "") boolean fieldurl,
-            @RequestParam(value = "viewurl",required = false, defaultValue = "") boolean viewurl,
-            @RequestParam(value = "format",required = false, defaultValue = "") String format
+            @RequestParam(value = "fieldurl",required = false, defaultValue = "false") boolean fieldurl,
+            @RequestParam(value = "viewurl",required = false, defaultValue = "false") boolean viewurl,
+            @RequestParam(value = "format",required = false, defaultValue = "JSON") String format
     ) {
-        return "ok";
+        QueryModel queryModel = new QueryModel();
+        queryModel.setDomain(domain);
+        queryModel.setEntryids(ParamStringUtil.splitString(entryids));
+        queryModel.setFields(ParamStringUtil.splitString(fields));
+        queryModel.setFieldurl(fieldurl);
+        queryModel.setViewurl(viewurl);
+        queryModel.setFormat(format);
+
+        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+
+        return queryResult;
+    }
+
+
+    // 对应DatasetWsClient getDatasetsById
+    // 但是这个方法好像没用
+
+    @RequestMapping(value = "/{accIds}/entry/{entryids}", method = RequestMethod.GET)
+    public QueryResult getPublicationList(@PathVariable(value = "accIds") String[] accIds,
+                                          @PathVariable(value = "entryids") String[] entryids)
+    {
+        QueryModel queryModel = new QueryModel();
+        StringBuffer stringBuffer = new StringBuffer("*:*");
+        for(String acc : accIds) {
+            stringBuffer.append("AND acc:" + acc);
+        }
+        queryModel.setQuery(stringBuffer.toString());
+        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+        return queryResult;
     }
 
     // auto complete
+    // DictionaryClient  getWordsDomains
     @RequestMapping(value = "/{domain}/autocomplete")
-    public String autoComplete(
+    public Suggestions autoComplete(
             @PathVariable(value = "domain") String domain,
             @RequestParam(value = "term") String term,
-            @RequestParam(value = "formatted",required = false, defaultValue = "") boolean formatted,
+            @RequestParam(value = "formatted",required = false, defaultValue = "false") boolean formatted,
             @RequestParam(value = "fields",required = false, defaultValue = "JSON") String format
     ) {
-        return "ok";
+
+        // 仅做单词的联想
+        String regex = "[a-zA-Z0-9]+";
+        Boolean match = Pattern.matches(regex,term);
+
+        if(match) {
+            Suggestions suggestions = autocompleteService.getSuggestions(domain,term, Suggestion.class);
+            return suggestions;
+        }else {
+            // todo Exception
+            return null;
+        }
+
+
     }
 
     // Cross-reference search
@@ -229,30 +355,83 @@ public class DatasetController {
             @RequestParam(value = "format",required = false, defaultValue = "") String format,
             @RequestParam(value = "entryattrs",required = false, defaultValue = "") String entryattrs
     ) {
+        Map<String,String[]> paramMap = new HashMap<>();
+
+        // 查询文档的库与id
+        List<String> list = new ArrayList<>();
+        list.add(FieldConstants.FIELD_ID + FieldConstants.PARAM + domain);
+        list.add(FieldConstants.DATABASE_ID + FieldConstants.PARAM + entryid);
+        String[] q = list.parallelStream().toArray(String[] :: new);
+        paramMap.put("q", q);
+
+        // 设置关联相似性field
+//        paramMap.put(MoreLikeThisParams.PREFIX + "field", new String[]{targetdomainid});
+
+
+        // 获取结论数据
+        SimilarResult similarResult = solrCustomService.getSimilarResult(domain,paramMap);
         return "ok";
     }
 
     // More like this
+    // @return SimilarResult
+    // 通过database+id找到文章，检查固定field的相似性如Constants.MORELIKE_FIELDS
+    // 其他属性用solr config.xml决定（size和分页暂时不知道怎么办）
     @RequestMapping(value = "/{domain}/entry/{entryid}/morelikethis/{targetdomainid}")
-    public String moreLikeThis(
+    public SimilarResult moreLikeThis(
             @PathVariable(value = "domain") String domain,
             @PathVariable(value = "entryid") String entryid,
             @PathVariable(value = "targetdomainid") String targetdomainid,
-            @RequestParam(value = "size",required = false, defaultValue = "") int size,
-            @RequestParam(value = "start",required = false, defaultValue = "") int start,
+            @RequestParam(value = "size",required = false, defaultValue = "10") int size,
+            @RequestParam(value = "start",required = false, defaultValue = "0") int start,
             @RequestParam(value = "fields",required = false, defaultValue = "") String fields,
-            @RequestParam(value = "fieldurl",required = false, defaultValue = "") boolean fieldurl,
-            @RequestParam(value = "viewurl",required = false, defaultValue = "") boolean viewurl,
-            @RequestParam(value = "mltfields",required = false, defaultValue = "") String mltfields,
-            @RequestParam(value = "mintermfreq",required = false, defaultValue = "") int mintermfreq,
-            @RequestParam(value = "mindocfreq",required = false, defaultValue = "") int mindocfreq,
-            @RequestParam(value = "maxqueryterm",required = false, defaultValue = "") int maxqueryterm,
+            @RequestParam(value = "fieldurl",required = false, defaultValue = "false") boolean fieldurl,
+            @RequestParam(value = "viewurl",required = false, defaultValue = "false") boolean viewurl,
+            @RequestParam(value = "mltfields",required = false, defaultValue = "") String mltfields,// []
+            @RequestParam(value = "mintermfreq",required = false, defaultValue = "0") int mintermfreq,
+            @RequestParam(value = "mindocfreq",required = false, defaultValue = "0") int mindocfreq,
+            @RequestParam(value = "maxqueryterm",required = false, defaultValue = "0") int maxqueryterm,
             @RequestParam(value = "excludes",required = false, defaultValue = "") String excludes,
             @RequestParam(value = "excludesets",required = false, defaultValue = "") String excludesets,
             @RequestParam(value = "format",required = false, defaultValue = "") String format,
             @RequestParam(value = "entryattrs",required = false, defaultValue = "") String entryattrs
     ) {
-        return "ok";
+        Map<String,String[]> paramMap = new HashMap<>();
+
+        // 查询文档的库与id
+        List<String> list = new ArrayList<>();
+        list.add(FieldConstants.FIELD_ID + FieldConstants.PARAM + domain);
+        list.add(FieldConstants.DATABASE_ID + FieldConstants.PARAM + entryid);
+        String[] q = list.parallelStream().toArray(String[] :: new);
+        paramMap.put("q", q);
+
+        // 设置关联相似性field
+        paramMap.put(MoreLikeThisParams.PREFIX + "field", new String[]{targetdomainid});
+
+
+        // 获取结论数据
+        SimilarResult similarResult = solrCustomService.getSimilarResult(domain,paramMap);
+//        QueryModel queryModel = new QueryModel();
+//        queryModel.setDomain(domain);
+//        queryModel.setEntryid(entryid);
+//        queryModel.setTargetdomainid(targetdomainid);
+//        queryModel.setSize(size);
+//        queryModel.setStart(start);
+//        queryModel.setFields(ParamStringUtil.splitString(fields));
+//        queryModel.setFieldurl(fieldurl);
+//        queryModel.setViewurl(viewurl);
+//        queryModel.setMltfields(ParamStringUtil.splitString(mltfields));
+//        queryModel.setMintermfreq(mintermfreq);
+//        queryModel.setMindocfreq(mindocfreq);
+//        queryModel.setMaxqueryterm(maxqueryterm);
+//        queryModel.setExcludes(ParamStringUtil.splitString(excludes));
+//        queryModel.setExcludesets(excludesets);
+//        queryModel.setFormat(format);
+//        queryModel.setEntryattrs(entryattrs);
+//        QueryResult queryResult = domainSearchService.getQueryResult(queryModel);
+//        SimilarResult similarResult = new SimilarResult();
+//        similarResult.setEntries(queryResult.getEntries());
+        return similarResult;
     }
 
 

@@ -40,6 +40,9 @@ public class SolrEntryServiceImpl implements ISolrEntryService{
             if(files.length > 0) {
                 for(File file: files) {
                     if(Pattern.matches(".*.xml", file.getName()) || Pattern.matches(".*.XML", file.getName())){
+                        /*
+                        可以把所有的solrEntry给加到列表里，但是我总觉得占用内存太大，不如用一次再说下一次
+                         */
                         this.saveSolrEntry(file.getAbsolutePath(),core);
                         // 应该是移动到别的文件夹下留档
                         file.renameTo(new File(backupPath+"\\"+file.getName()));

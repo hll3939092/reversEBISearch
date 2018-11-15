@@ -1,6 +1,7 @@
 package cn.ncbsp.omicsdi.solr.repo.Impl;
 
 import cn.ncbsp.omicsdi.solr.repo.SolrEntryRepo;
+import cn.ncbsp.omicsdi.solr.solrTool.SolrSuggestTemplate;
 import cn.ncbsp.omicsdi.solr.solrmodel.SolrEntry;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class SolrEntryRepoImpl<T> implements SolrEntryRepo<T> {
 
     @Autowired
     SolrTemplate solrTemplate;
+
+    @Autowired
+    SolrSuggestTemplate solrSuggestTemplate;
 
     @Override
     public void saveEntry(String core, SolrEntry entry) {
@@ -64,4 +68,13 @@ public class SolrEntryRepoImpl<T> implements SolrEntryRepo<T> {
         FacetPage<T> solrEntrySolrResultPage = solrTemplate.queryForFacetPage(core,query,clazz);
         return solrEntrySolrResultPage;
     }
+
+    @Override
+    public SolrResultPage<T> getSuggestQueryResult(String core, Query query, Class<T> clazz) {
+        SolrResultPage<T> solrResultPage = solrSuggestTemplate.query(core,query,clazz);
+
+        return solrResultPage;
+    }
+
+
 }

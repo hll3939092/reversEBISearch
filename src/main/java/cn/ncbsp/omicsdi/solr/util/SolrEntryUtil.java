@@ -2,6 +2,7 @@ package cn.ncbsp.omicsdi.solr.util;
 
 import cn.ncbsp.omicsdi.solr.model.Entry;
 import cn.ncbsp.omicsdi.solr.solrmodel.SolrEntry;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -41,31 +42,130 @@ public class SolrEntryUtil {
 
             Map<String,List<String>> additionalMap = new HashMap<>();
 
+            List<String> taxonomy = new ArrayList<>();
             entry.getCrossReferences().getRef().forEach(reference -> {
-                if(null == additionalMap.get("additional_"+reference.getDbname())){
-                    List<String> listForMap = new ArrayList<>();
-                    listForMap.add(reference.getDbkey());
-                    additionalMap.put("additional_"+reference.getDbname(),listForMap);
-                }else {
-                    List<String> listField = additionalMap.get("additional_"+reference.getDbname());
-                    listField.add(reference.getDbkey());
-                    additionalMap.put("additional_"+reference.getDbname(),listField);
+                if(reference.getDbname().equals("TAXONOMY")) {
+                    taxonomy.add(reference.getDbkey());
+                } else {
+                        if(null == additionalMap.get("additional_"+reference.getDbname())){
+                        List<String> listForMap = new ArrayList<>();
+                        listForMap.add(reference.getDbkey());
+                        additionalMap.put("additional_"+reference.getDbname(),listForMap);
+                    }else {
+                        List<String> listField = additionalMap.get("additional_"+reference.getDbname());
+                        listField.add(reference.getDbkey());
+                        additionalMap.put("additional_"+reference.getDbname(),listField);
+                    }
                 }
             });
 
+            solrEntry.setTaxonomy(taxonomy);
+
+            List<String> tissues = new ArrayList<>();
+            List<String> diseases = new ArrayList<>();
+            List<String> omicsTypes = new ArrayList<>();
 
             entry.getAdditionalFields().getField().forEach(field -> {
-                if(null == additionalMap.get("additional_"+field.getName())) {
-                    List<String> listForMap = new ArrayList<>();
-                    listForMap.add(field.getValue());
-                    additionalMap.put("additional_"+field.getName(),listForMap);
-                }else {
-                    List<String> listField = additionalMap.get("additional_"+field.getName());
-                    listField.add(field.getValue());
-                    additionalMap.put("additional_"+field.getName(),listField);
+                if(field.getName().equals("pubmed_abstract")) {
+                    solrEntry.setPubmedAbstract(field.getValue());
+                } else if (field.getName().equals("view_count")) {
+                    solrEntry.setViewCount(field.getValue());
+                } else if (field.getName().equals("citation_count")) {
+                    solrEntry.setCitationCount(field.getValue());
+                } else if (field.getName().equals("search_count")) {
+                    solrEntry.setSearchCount(field.getValue());
+                } else if (field.getName().equals("tissue")) {
+                    tissues.add(field.getValue());
+                } else if (field.getName().equals("disease")) {
+                    diseases.add(field.getValue());
+                } else if (field.getName().equals("omics_type")) {
+                    omicsTypes.add(field.getValue());
+                } else {
+                    if(null == additionalMap.get("additional_"+field.getName())) {
+                        List<String> listForMap = new ArrayList<>();
+                        listForMap.add(field.getValue());
+                        additionalMap.put("additional_"+field.getName(),listForMap);
+                    }else {
+                        List<String> listField = additionalMap.get("additional_"+field.getName());
+                        listField.add(field.getValue());
+                        additionalMap.put("additional_"+field.getName(),listField);
+                    }
                 }
             });
+
+            solrEntry.setTissue(tissues);
+            solrEntry.setDisease(diseases);
+            solrEntry.setOmicsType(omicsTypes);
+//            entry.getCrossReferences().getRef().forEach(reference -> {
+//                if(null == additionalMap.get("additional_"+reference.getDbname())){
+//                    List<String> listForMap = new ArrayList<>();
+//                    listForMap.add(reference.getDbkey());
+//                    additionalMap.put("additional_"+reference.getDbname(),listForMap);
+//                }else {
+//                    List<String> listField = additionalMap.get("additional_"+reference.getDbname());
+//                    listField.add(reference.getDbkey());
+//                    additionalMap.put("additional_"+reference.getDbname(),listField);
+//                }
+//            });
+//
+//
+//            entry.getAdditionalFields().getField().forEach(field -> {
+//
+//                // todo 这个文章简介是否只有一个？
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("pubmed_abstract")) {
+//                    solrEntry.setPubmedAbstract(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("view_count")) {
+//                    solrEntry.setViewCount(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("citation_count")) {
+//                    solrEntry.setCitationCount(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("search_count")) {
+//                    solrEntry.setSearchCount(field.getValue());
+//                }
+//
+//
+//                // ???
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("search_count")) {
+//                    solrEntry.setSearchCount(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("tissue")) {
+//                    solrEntry.setTissue(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("disease")) {
+//                    solrEntry.setDisease(field.getValue());
+//                }
+//
+//                if(!StringUtils.isBlank(field.getName()) && field.getName().equals("omics_type")) {
+//                    solrEntry.setOmicsType(field.getValue());
+//                }
+//
+//
+//                if(!StringUtils.isBlank(field.getName()) && !field.getName().equals("pubmed_abstract") && !field.getName().equals("search_count") && !field.getName().equals("citation_count") && !field.getName().equals("view_count")
+//                && !field.getName().equals("omics_type") && !field.getName().equals("disease") && !field.getName().equals("tissue")
+//                ){
+//                    if(null == additionalMap.get("additional_"+field.getName())) {
+//                        List<String> listForMap = new ArrayList<>();
+//                        listForMap.add(field.getValue());
+//                        additionalMap.put("additional_"+field.getName(),listForMap);
+//                    }else {
+//                        List<String> listField = additionalMap.get("additional_"+field.getName());
+//                        listField.add(field.getValue());
+//                        additionalMap.put("additional_"+field.getName(),listField);
+//                    }
+//                }
+//
+//            });
             solrEntry.setAdditionalFields(additionalMap);
+            if(StringUtils.isBlank(solrEntry.getPubmedAbstract())) {
+                solrEntry.setPubmedAbstract("Not Availiable");
+            }
 
 //            List<String> listOmicsType = new ArrayList<>();
 //            List<String> listDataProtocol = new ArrayList<>();

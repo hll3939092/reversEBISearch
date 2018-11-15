@@ -43,6 +43,19 @@
     <mvc:default-servlet-handler/>
     <context:annotation-config/>
 
+    <!--<mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>-->
+    <!--<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>-->
+    <!--&lt;!&ndash;<mvc:interceptors>&ndash;&gt;-->
+        <!--&lt;!&ndash;<mvc:interceptor>&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash; 拦截所有的请求，这个必须写在前面，也就是写在【不拦截】的上面 &ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;<mvc:mapping path="/**" />&ndash;&gt;-->
+            <!--&lt;!&ndash;<mvc:exclude-mapping path="/swagger*/**"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<mvc:exclude-mapping path="/v2/**"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;<mvc:exclude-mapping path="/webjars/**"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</mvc:interceptor>&ndash;&gt;-->
+    <!--&lt;!&ndash;</mvc:interceptors>&ndash;&gt;-->
+    <!--<bean class="cn.ncbsp.omicsdi.solr.swagger2.Swagger2Conf" />-->
+
 
     <!-- 配置视图解析器 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -101,11 +114,11 @@
         </property>
     </bean>
 
-    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
+    <!--<bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>-->
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <property name="parser" ref="XMLResponseParser"></property>
+        <!--<property name="parser" ref="XMLResponseParser"></property>-->
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
@@ -113,6 +126,10 @@
     </bean>
 
     <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
+        <constructor-arg name="solrClient" ref="solrClient"></constructor-arg>
+    </bean>
+
+    <bean id="solrSuggestTemplate" class="cn.ncbsp.omicsdi.solr.solrTool.SolrSuggestTemplate">
         <constructor-arg name="solrClient" ref="solrClient"></constructor-arg>
     </bean>
 

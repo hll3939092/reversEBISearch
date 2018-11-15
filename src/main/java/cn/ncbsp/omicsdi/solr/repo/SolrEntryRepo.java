@@ -13,6 +13,7 @@ public interface SolrEntryRepo<T> {
     void saveEntryList(String core, List<SolrEntry> entries);
     SolrResultPage<T> getQueryResult(String core, Query query, Class<T> clazz);
     FacetPage<T> getFacetQueryResult(String core, FacetQuery query, Class<T> clazz);
+    SolrResultPage<T> getSuggestQueryResult(String core, Query query, Class<T> clazz);
 }
 
 

@@ -42,17 +42,31 @@ public class SolrEntry {
     @Field(value = "date_others")
     String dateOthers;
 
-//    @Field
-//    String publication;
-//
-//    @Field
-//    String submission;
+    @Field(value = "pubmed_abstract")
+    String pubmedAbstract;
 
-//    @Field
-//    Set<String> dbname;
-//
-//    @Field(value = "dbkey")
-//    List<String> dbkey;
+    @Field(value = "view_count")
+    String viewCount;
+
+    @Field(value = "citation_count")
+    String citationCount;
+
+    @Field(value = "search_count")
+    String searchCount;
+
+    @Field(value = "TAXONOMY")
+    List<String> taxonomy;
+
+    @Field(value = "tissue")
+    List<String> tissue;
+
+    @Field(value = "omics_type")
+    List<String> omicsType;
+
+    @Field(value = "disease")
+    List<String> disease;
+
+
 
     @Field(value = "additional_*")
     Map<String,List<String>> additionalFields;
@@ -141,19 +155,6 @@ public class SolrEntry {
     public SolrEntry() {
     }
 
-    public SolrEntry(String id, String acc, String name, String description, String database, String datePublication, String dateSubmission, String dateUpdated, String dateCreation, String dateOthers, Set<String> dbname, List<String> dbkey, Map<String, List<String>> additionalFields) {
-        this.id = id;
-        this.acc = acc;
-        this.name = name;
-        this.description = description;
-        this.database = database;
-        this.datePublication = datePublication;
-        this.dateSubmission = dateSubmission;
-        this.dateUpdated = dateUpdated;
-        this.dateCreation = dateCreation;
-        this.dateOthers = dateOthers;
-        this.additionalFields = additionalFields;
-    }
 
     public String getId() {
         return id;
@@ -227,7 +228,39 @@ public class SolrEntry {
         this.dateOthers = dateOthers;
     }
 
-//    public Set<String> getDbname() {
+    public List<String> getTaxonomy() {
+        return taxonomy;
+    }
+
+    public void setTaxonomy(List<String> taxonomy) {
+        this.taxonomy = taxonomy;
+    }
+
+    public List<String> getTissue() {
+        return tissue;
+    }
+
+    public void setTissue(List<String> tissue) {
+        this.tissue = tissue;
+    }
+
+    public List<String> getOmicsType() {
+        return omicsType;
+    }
+
+    public void setOmicsType(List<String> omicsType) {
+        this.omicsType = omicsType;
+    }
+
+    public List<String> getDisease() {
+        return disease;
+    }
+
+    public void setDisease(List<String> disease) {
+        this.disease = disease;
+    }
+
+    //    public Set<String> getDbname() {
 //        return dbname;
 //    }
 //
@@ -419,20 +452,35 @@ public class SolrEntry {
         this.database = database;
     }
 
-    @Override
-    public String toString() {
-        return "SolrEntry{" +
-                "id='" + id + '\'' +
-                ", acc='" + acc + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", database='" + database + '\'' +
-                ", datePublication='" + datePublication + '\'' +
-                ", dateSubmission='" + dateSubmission + '\'' +
-                ", dateUpdated='" + dateUpdated + '\'' +
-                ", dateCreation='" + dateCreation + '\'' +
-                ", dateOthers='" + dateOthers + '\'' +
-                ", additionalFields=" + additionalFields +
-                '}';
+    public String getPubmedAbstract() {
+        return pubmedAbstract;
+    }
+
+    public void setPubmedAbstract(String pubmedAbstract) {
+        this.pubmedAbstract = pubmedAbstract;
+    }
+
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public void setViewCount(String viewCount) {
+        this.viewCount = viewCount;
+    }
+
+    public String getCitationCount() {
+        return citationCount;
+    }
+
+    public void setCitationCount(String citationCount) {
+        this.citationCount = citationCount;
+    }
+
+    public String getSearchCount() {
+        return searchCount;
+    }
+
+    public void setSearchCount(String searchCount) {
+        this.searchCount = searchCount;
     }
 }
