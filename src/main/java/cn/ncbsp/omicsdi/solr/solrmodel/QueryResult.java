@@ -28,9 +28,10 @@ public class QueryResult {
     @JsonProperty("domains")
     List<Domains> domains;
 
-    public QueryResult(){
+    public QueryResult() {
         count = 0;
     }
+
     public Integer getCount() {
         return count;
     }
@@ -66,30 +67,30 @@ public class QueryResult {
     public void addResults(QueryResult results) {
 
         Set<Entry> entries = new HashSet<>();
-        Set<Facet> facets  = new HashSet<>();
+        Set<Facet> facets = new HashSet<>();
 
-        if(results != null){
+        if (results != null) {
 
-            if(this.entries != null)
+            if (this.entries != null)
                 Collections.addAll(entries, this.entries);
-            if(results.entries != null)
+            if (results.entries != null)
                 Collections.addAll(entries, results.entries);
-            if(this.facets != null)
+            if (this.facets != null)
                 Collections.addAll(facets, this.facets);
-            if(results.facets != null)
+            if (results.facets != null)
                 Collections.addAll(facets, results.facets);
 
-            this.facets  = new Facet[facets.size()];
+            this.facets = new Facet[facets.size()];
             this.entries = new Entry[entries.size()];
 
             int i = 0;
-            for(Entry entry: entries){
+            for (Entry entry : entries) {
                 this.entries[i] = entry;
                 i++;
             }
 
             i = 0;
-            for(Facet entry: facets){
+            for (Facet entry : facets) {
                 this.facets[i] = entry;
                 i++;
             }

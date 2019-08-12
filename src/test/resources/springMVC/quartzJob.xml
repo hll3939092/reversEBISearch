@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:solr="http://www.springframework.org/schema/c"
-       xmlns:jpa="http://www.springframework.org/schema/data/solr"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/mvc
 	   					   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 	   					   http://www.springframework.org/schema/beans
 	   					   http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 	   					   http://www.springframework.org/schema/context
-	   					   http://www.springframework.org/schema/context/spring-context-4.0.xsd
-	   					   http://www.springframework.org/schema/aop
-	   					   http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd"
+	   					   http://www.springframework.org/schema/context/spring-context-4.0.xsd"
        default-lazy-init="true">
 
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr"></context:component-scan>
@@ -21,47 +17,47 @@
 
     <!--&lt;!&ndash; For times when you just need to invoke a method on a specific object &ndash;&gt;-->
     <!--<bean id="simpleJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
-        <!--<property name="targetObject" ref="myBean" />-->
-        <!--<property name="targetMethod" value="printMessage" />-->
+    <!--<property name="targetObject" ref="myBean" />-->
+    <!--<property name="targetMethod" value="printMessage" />-->
     <!--</bean>-->
 
     <!--&lt;!&ndash; For times when you need more complex processing, passing data to the scheduled job &ndash;&gt;-->
     <!--<bean name="complexJobDetail"    class="org.springframework.scheduling.quartz.JobDetailFactoryBean">-->
-        <!--<property name="jobClass" value="cn.ncbsp.omicsdi.solr.scheduler.ImportJob" />-->
-        <!--<property name="durability" value="true" />-->
+    <!--<property name="jobClass" value="cn.ncbsp.omicsdi.solr.scheduler.ImportJob" />-->
+    <!--<property name="durability" value="true" />-->
     <!--</bean>-->
 
     <!--&lt;!&ndash; Run the job every 2 seconds with initial delay of 1 second &ndash;&gt;-->
     <!--<bean id="simpleTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">-->
-        <!--<property name="jobDetail" ref="simpleJobDetail" />-->
-        <!--<property name="startDelay" value="1000" />-->
-        <!--<property name="repeatInterval" value="2000" />-->
+    <!--<property name="jobDetail" ref="simpleJobDetail" />-->
+    <!--<property name="startDelay" value="1000" />-->
+    <!--<property name="repeatInterval" value="2000" />-->
     <!--</bean>-->
 
     <!--&lt;!&ndash; Run the job every 5 seconds only on Weekends &ndash;&gt;-->
     <!--<bean id="cronTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
-        <!--<property name="jobDetail" ref="complexJobDetail" />-->
-        <!--<property name="cronExpression" value="0/5 * * ? * SAT-SUN" />-->
+    <!--<property name="jobDetail" ref="complexJobDetail" />-->
+    <!--<property name="cronExpression" value="0/5 * * ? * SAT-SUN" />-->
     <!--</bean>-->
 
     <!--&lt;!&ndash; Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler &ndash;&gt;-->
     <!--<bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
-        <!--<property name="jobDetails">-->
-            <!--<list>-->
-                <!--<ref bean="simpleJobDetail" />-->
-                <!--<ref bean="complexJobDetail" />-->
-            <!--</list>-->
-        <!--</property>-->
+    <!--<property name="jobDetails">-->
+    <!--<list>-->
+    <!--<ref bean="simpleJobDetail" />-->
+    <!--<ref bean="complexJobDetail" />-->
+    <!--</list>-->
+    <!--</property>-->
 
-        <!--<property name="triggers">-->
-            <!--<list>-->
-                <!--<ref bean="simpleTrigger" />-->
-                <!--<ref bean="cronTrigger" />-->
-            <!--</list>-->
-        <!--</property>-->
+    <!--<property name="triggers">-->
+    <!--<list>-->
+    <!--<ref bean="simpleTrigger" />-->
+    <!--<ref bean="cronTrigger" />-->
+    <!--</list>-->
+    <!--</property>-->
     <!--</bean>-->
 
-    <bean id="importData" class="cn.ncbsp.omicsdi.solr.scheduler.ImportJob" />
+    <bean id="importData" class="cn.ncbsp.omicsdi.solr.scheduler.ImportJob"/>
 
     <!-- 将需要执行的定时任务注入JOB中。 -->
     <bean id="testJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">

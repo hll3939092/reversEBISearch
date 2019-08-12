@@ -1,4 +1,3 @@
-
 package cn.ncbsp.omicsdi.solr.model;
 
 import javax.xml.bind.annotation.*;
@@ -7,9 +6,9 @@ import java.io.Serializable;
 
 /**
  * <p>Java class for fieldType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="fieldType"&gt;
  *   &lt;simpleContent&gt;
@@ -27,16 +26,13 @@ import java.io.Serializable;
  *   &lt;/simpleContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "fieldType", propOrder = {
-    "value"
+        "value"
 })
 public class Field
-    implements Serializable, IDataObject
-{
+        implements Serializable, IDataObject {
 
     private final static long serialVersionUID = 105L;
     @XmlValue
@@ -48,11 +44,9 @@ public class Field
 
     /**
      * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getValue() {
         return value;
@@ -60,11 +54,9 @@ public class Field
 
     /**
      * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setValue(String value) {
         this.value = value;
@@ -72,11 +64,9 @@ public class Field
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getName() {
         return name;
@@ -84,11 +74,9 @@ public class Field
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -96,11 +84,9 @@ public class Field
 
     /**
      * Gets the value of the boost property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is
+     * {@link Float }
      */
     public Float getBoost() {
         return boost;
@@ -108,11 +94,9 @@ public class Field
 
     /**
      * Sets the value of the boost property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Float }
      */
     public void setBoost(Float value) {
         this.boost = value;

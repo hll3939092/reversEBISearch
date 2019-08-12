@@ -5,11 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 public class ParamStringUtil {
 
     public static String[] splitString(String sentence) {
-        if(StringUtils.isBlank(sentence)) {
+        if (StringUtils.isBlank(sentence)) {
             return new String[]{};
-        }else if(sentence.indexOf(",")<0) {
+        } else if (sentence.indexOf(",") < 0) {
             return new String[]{sentence};
-        }else {
+        } else {
             return sentence.split(",");
         }
     }

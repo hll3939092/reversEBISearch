@@ -4,13 +4,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
-import java.util.Arrays;
-
 @SolrDocument(solrCoreName = "new_core")
 public class Money {
 
     @Id
-    @Indexed(name = "id",type = "string")
+    @Indexed(name = "id", type = "string")
     private String id;
 
     private String name;
@@ -20,6 +18,20 @@ public class Money {
     private String features;
     private String price_c;
     private boolean inStock;
+
+    public Money() {
+    }
+
+    public Money(String id, String name, String manu, String manu_id_s, String cat, String features, String price_c, boolean inStock) {
+        this.id = id;
+        this.name = name;
+        this.manu = manu;
+        this.manu_id_s = manu_id_s;
+        this.cat = cat;
+        this.features = features;
+        this.price_c = price_c;
+        this.inStock = inStock;
+    }
 
     public String getId() {
         return id;
@@ -82,19 +94,6 @@ public class Money {
     }
 
     public void setInStock(boolean inStock) {
-        this.inStock = inStock;
-    }
-
-    public Money() {}
-
-    public Money(String id, String name, String manu, String manu_id_s, String cat, String features, String price_c, boolean inStock) {
-        this.id = id;
-        this.name = name;
-        this.manu = manu;
-        this.manu_id_s = manu_id_s;
-        this.cat = cat;
-        this.features = features;
-        this.price_c = price_c;
         this.inStock = inStock;
     }
 

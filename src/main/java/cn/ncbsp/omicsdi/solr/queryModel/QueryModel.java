@@ -1,8 +1,8 @@
 package cn.ncbsp.omicsdi.solr.queryModel;
 
-import java.util.List;
-
-/*
+/**
+ * @author Xpon
+ */ /*
     现在暂时只支持Q查询和facet查询
     以后再增加fq等属性
 

@@ -1,7 +1,6 @@
 package cn.ncbsp.omicsdi.solr.solrmodel;
 
 import org.apache.solr.client.solrj.beans.Field;
-import org.apache.solr.common.util.Hash;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import java.util.HashMap;
@@ -12,13 +11,13 @@ import java.util.Map;
 public class TestModel {
 
     @Field(value = "*")
-    HashMap<String,List<String>> map;
+    HashMap<String, List<String>> map;
 
     public TestModel(HashMap<String, List<String>> map) {
         this.map = map;
     }
 
-    public Map<String ,List<String>> getMap() {
+    public Map<String, List<String>> getMap() {
         return map;
     }
 

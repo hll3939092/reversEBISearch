@@ -1,4 +1,3 @@
-
 package cn.ncbsp.omicsdi.solr.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,9 +9,9 @@ import java.io.Serializable;
 
 /**
  * <p>Java class for dateType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="dateType"&gt;
  *   &lt;complexContent&gt;
@@ -23,14 +22,11 @@ import java.io.Serializable;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "dateType")
 public class Date
-    implements Serializable, IDataObject
-{
+        implements Serializable, IDataObject {
 
     private final static long serialVersionUID = 105L;
     @XmlAttribute(name = "type", required = true)
@@ -46,7 +42,8 @@ public class Date
 
     /**
      * Constructor with both parameters
-     * @param type type of the date
+     *
+     * @param type  type of the date
      * @param value value of the date
      */
     public Date(String type, String value) {
@@ -56,11 +53,9 @@ public class Date
 
     /**
      * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getType() {
         return type;
@@ -68,11 +63,9 @@ public class Date
 
     /**
      * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setType(String value) {
         this.type = value;
@@ -80,11 +73,9 @@ public class Date
 
     /**
      * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getValue() {
         return value;
@@ -92,11 +83,9 @@ public class Date
 
     /**
      * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setValue(String value) {
         this.value = value;

@@ -7,14 +7,17 @@ import cn.ncbsp.omicsdi.solr.solrmodel.*;
 import cn.ncbsp.omicsdi.solr.util.SolrQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.solr.core.query.Field;
 import org.springframework.data.solr.core.query.SimpleFacetQuery;
-import org.springframework.data.solr.core.query.result.*;
+import org.springframework.data.solr.core.query.result.FacetFieldEntry;
+import org.springframework.data.solr.core.query.result.SimpleFacetFieldEntry;
+import org.springframework.data.solr.core.query.result.SolrResultPage;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * @author Xpon
+ */
 @Service
 public class DomainSearchServiceImpl implements IDomainSearchService {
 
@@ -28,17 +31,17 @@ public class DomainSearchServiceImpl implements IDomainSearchService {
 
         SimpleFacetQuery simpleFacetQuery = SolrQueryBuilder.buildSimpleFacetQuery(queryModel);
 
-        SolrResultPage<SolrEntry> facetPage = (SolrResultPage<SolrEntry>) solrEntryRepo.getFacetQueryResult(queryModel.getDomain(),simpleFacetQuery,SolrEntry.class);
+        SolrResultPage<SolrEntry> facetPage = (SolrResultPage<SolrEntry>) solrEntryRepo.getFacetQueryResult(queryModel.getDomain(), simpleFacetQuery, SolrEntry.class);
 
         System.out.println("ok");
 
-        queryResult.setCount((int)facetPage.getTotalElements());
+        queryResult.setCount((int) facetPage.getTotalElements());
 
 
         List<SolrEntry> solrEntryList = facetPage.getContent();
 
         List<Entry> entryList = new ArrayList<Entry>();
-        for(SolrEntry solrEntry : solrEntryList) {
+        for (SolrEntry solrEntry : solrEntryList) {
             Map<String, List<String>> map = solrEntry.getAdditionalFields();
             Entry entry = new Entry();
             entry.setId(solrEntry.getId());
@@ -46,13 +49,13 @@ public class DomainSearchServiceImpl implements IDomainSearchService {
 
             Map<String, String[]> formatedMap = new HashMap<String, String[]>();
             Set<String> keyset = map.keySet();
-            for(String key : keyset) {
+            for (String key : keyset) {
                 List<String> list = map.get(key);
                 String[] value = new String[list.size()];
                 value = list.toArray(value);
 
                 String formatedKey = key.substring(11);
-                formatedMap.put(formatedKey,value);
+                formatedMap.put(formatedKey, value);
             }
             entry.setFields(formatedMap);
 
@@ -73,15 +76,15 @@ public class DomainSearchServiceImpl implements IDomainSearchService {
 
         // 循环遍历生成facet数组对象
         List<Facet> facets = new ArrayList<Facet>();
-        for(SolrResultPage<SimpleFacetFieldEntry> srp : list) {
+        for (SolrResultPage<SimpleFacetFieldEntry> srp : list) {
             List<SimpleFacetFieldEntry> listffe = srp.getContent();
             Facet facet = new Facet();
             int total = 0;
             List<FacetValue> facetValues = new ArrayList<FacetValue>();
-            for(SimpleFacetFieldEntry sffe : listffe) {
+            for (SimpleFacetFieldEntry sffe : listffe) {
                 facet.setId(sffe.getField().getName());
                 facet.setLabel(sffe.getField().getName());
-                total = total + (int)sffe.getValueCount();
+                total = total + (int) sffe.getValueCount();
                 FacetValue facetValue = new FacetValue();
                 facetValue.setLabel(sffe.getValue());
                 facetValue.setValue(sffe.getValue());
@@ -105,10 +108,7 @@ public class DomainSearchServiceImpl implements IDomainSearchService {
 
         // set domain
         Domains domains = new Domains();
-
-
-
-
+        queryResult.setDomains(null);
 
         return queryResult;
     }

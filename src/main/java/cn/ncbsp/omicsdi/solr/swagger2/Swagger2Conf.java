@@ -11,9 +11,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-//@EnableWebMvc
-//@Configuration
-//@EnableSwagger2
+@EnableWebMvc
+@Configuration
+@EnableSwagger2
 public class Swagger2Conf {
 
     @Bean
@@ -28,8 +28,8 @@ public class Swagger2Conf {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("后端爸爸给你的API指南")
-                .description("后端爸爸给你的API指南")
+                .title("OmicsDISearch API指南")
+                .description("OmicsDISearch API指南")
                 .contact("Xpon")
                 .version("1.0")
                 .build();

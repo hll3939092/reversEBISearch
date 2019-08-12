@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 
 /**
- * @author  @ypriverol Yasset Perez-Riverol
+ * @author @ypriverol Yasset Perez-Riverol
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,6 +25,14 @@ public class TermResult {
 
     public void setTerms(Term[] terms) {
         this.terms = terms;
+    }
+
+    public int getTotalTermCount() {
+        return totalTermCount;
+    }
+
+    public void setTotalTermCount(int totalTermCount) {
+        this.totalTermCount = totalTermCount;
     }
 
     @Override

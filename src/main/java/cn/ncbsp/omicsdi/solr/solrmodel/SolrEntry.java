@@ -7,9 +7,8 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-@SolrDocument(collection = "omicsdi")
+@SolrDocument
 public class SolrEntry {
     @Id
     @Field
@@ -37,7 +36,7 @@ public class SolrEntry {
     String dateUpdated;
 
     @Field(value = "date_creation")
-    String dateCreation ;
+    String dateCreation;
 
     @Field(value = "date_others")
     String dateOthers;
@@ -54,6 +53,9 @@ public class SolrEntry {
     @Field(value = "search_count")
     String searchCount;
 
+    @Field(value = "reanalysis_count")
+    String reanalysisCount;
+
     @Field(value = "TAXONOMY")
     List<String> taxonomy;
 
@@ -66,13 +68,64 @@ public class SolrEntry {
     @Field(value = "disease")
     List<String> disease;
 
+    @Field(value = "submitter_keywords")
+    List<String> submitterKeywords;
 
+    @Field(value = "curator_keywords")
+    List<String> curatorKeywords;
 
+    @Field(value = "publication_date")
+    Date publicationDate;
+
+    @Field(value = "ENSEMBL")
+    List<String> ENSEMBL;
+
+    @Field(value = "UNIPROT")
+    List<String> UNIPROT;
+
+    @Field(value = "CHEBI")
+    List<String> CHEBI;
+
+    @Field(value = "PUBMED")
+    List<String> PUBMED;
+
+    @Field(value = "data_protocol")
+    String dataProtocol;
+
+    @Field(value = "sample_protocol")
+    String sampleProtocol;
     @Field(value = "additional_*")
-    Map<String,List<String>> additionalFields;
+    Map<String, List<String>> additionalFields;
+
+    public SolrEntry() {
+    }
+
+    public String getDataProtocol() {
+        return dataProtocol;
+    }
+
+    public void setDataProtocol(String dataProtocol) {
+        this.dataProtocol = dataProtocol;
+    }
+
+    public String getSampleProtocol() {
+        return sampleProtocol;
+    }
+
+    public void setSampleProtocol(String sampleProtocol) {
+        this.sampleProtocol = sampleProtocol;
+    }
+
+    public List<String> getPUBMED() {
+        return PUBMED;
+    }
 
 //    @Field(value = "omics_type")
 //    List<String> omicsType;
+
+    public void setPUBMED(List<String> PUBMED) {
+        this.PUBMED = PUBMED;
+    }
 
     public Map<String, List<String>> getAdditionalFields() {
         return additionalFields;
@@ -81,80 +134,6 @@ public class SolrEntry {
     public void setAdditionalFields(Map<String, List<String>> additionalFields) {
         this.additionalFields = additionalFields;
     }
-
-//
-//
-//    @Field(value = "data_protocol")
-//    List<String> dataProtocol;
-//
-//    @Field(value = "sample_protocol")
-//    List<String> sampleProtocol;
-//
-//    @Field(value = "repository")
-//    List<String> repository;
-//
-//    @Field(value = "species")
-//    List<String> species;
-//
-//    @Field(value = "disease")
-//    List<String> disease;
-//
-//
-//    @Field(value = "tissue")
-//    List<String> tissue;
-//
-//    @Field(value = "cell_type")
-//    List<String> cellType;
-//
-//    @Field(value = "full_dataset_link")
-//    List<String> fullDatasetLink;
-//
-//
-//    @Field(value = "submitter")
-//    List<String> submitter;
-//
-//
-//
-//    @Field(value = "submitter_mail")
-//    List<String> submitterMail;
-//
-//    @Field(value = "submitter_affiliation")
-//    List<String> submitterAffiliation;
-//
-//    @Field(value = "instrument_platform")
-//    List<String> instrumentPlatform;
-//
-//    @Field(value = "technology_type")
-//    List<String> technologyType;
-//
-//
-//    @Field(value = "modification")
-//    List<String> modification;
-//
-//    @Field(value = "submitter_keywords")
-//    List<String> submitterKeywords;
-//
-//    @Field(value = "quantification_method")
-//    List<String> quantificationMethod;
-//
-//    @Field(value = "submission_type")
-//    List<String> submissionType;
-//
-//
-//
-//    @Field(value = "software")
-//    List<String> software;
-//
-//    @Field(value = "publication")
-//    List<String> publication;
-//
-//    @Field(value = "dataset_file")
-//    List<String> datasetFile;
-
-
-    public SolrEntry() {
-    }
-
 
     public String getId() {
         return id;
@@ -260,190 +239,6 @@ public class SolrEntry {
         this.disease = disease;
     }
 
-    //    public Set<String> getDbname() {
-//        return dbname;
-//    }
-//
-//    public void setDbname(Set<String> dbname) {
-//        this.dbname = dbname;
-//    }
-//
-//    public List<String> getDbkey() {
-//        return dbkey;
-//    }
-//
-//    public void setDbkey(List<String> dbkey) {
-//        this.dbkey = dbkey;
-//    }
-
-//    public List<String> getOmicsType() {
-//        return omicsType;
-//    }
-//
-//    public void setOmicsType(List<String> omicsType) {
-//        this.omicsType = omicsType;
-//    }
-//
-//    public List<String> getDataProtocol() {
-//        return dataProtocol;
-//    }
-//
-//    public void setDataProtocol(List<String> dataProtocol) {
-//        this.dataProtocol = dataProtocol;
-//    }
-//
-//    public List<String> getSampleProtocol() {
-//        return sampleProtocol;
-//    }
-//
-//    public void setSampleProtocol(List<String> sampleProtocol) {
-//        this.sampleProtocol = sampleProtocol;
-//    }
-//
-//    public List<String> getRepository() {
-//        return repository;
-//    }
-//
-//    public void setRepository(List<String> repository) {
-//        this.repository = repository;
-//    }
-//
-//    public List<String> getSpecies() {
-//        return species;
-//    }
-//
-//    public void setSpecies(List<String> species) {
-//        this.species = species;
-//    }
-//
-//    public List<String> getDisease() {
-//        return disease;
-//    }
-//
-//    public void setDisease(List<String> disease) {
-//        this.disease = disease;
-//    }
-//
-//    public List<String> getTissue() {
-//        return tissue;
-//    }
-//
-//    public void setTissue(List<String> tissue) {
-//        this.tissue = tissue;
-//    }
-//
-//    public List<String> getCellType() {
-//        return cellType;
-//    }
-//
-//    public void setCellType(List<String> cellType) {
-//        this.cellType = cellType;
-//    }
-//
-//    public List<String> getFullDatasetLink() {
-//        return fullDatasetLink;
-//    }
-//
-//    public void setFullDatasetLink(List<String> fullDatasetLink) {
-//        this.fullDatasetLink = fullDatasetLink;
-//    }
-//
-//    public List<String> getSubmitter() {
-//        return submitter;
-//    }
-//
-//    public void setSubmitter(List<String> submitter) {
-//        this.submitter = submitter;
-//    }
-//
-//    public List<String> getSubmitterMail() {
-//        return submitterMail;
-//    }
-//
-//    public void setSubmitterMail(List<String> submitterMail) {
-//        this.submitterMail = submitterMail;
-//    }
-//
-//    public List<String> getSubmitterAffiliation() {
-//        return submitterAffiliation;
-//    }
-//
-//    public void setSubmitterAffiliation(List<String> submitterAffiliation) {
-//        this.submitterAffiliation = submitterAffiliation;
-//    }
-//
-//    public List<String> getInstrumentPlatform() {
-//        return instrumentPlatform;
-//    }
-//
-//    public void setInstrumentPlatform(List<String> instrumentPlatform) {
-//        this.instrumentPlatform = instrumentPlatform;
-//    }
-//
-//    public List<String> getTechnologyType() {
-//        return technologyType;
-//    }
-//
-//    public void setTechnologyType(List<String> technologyType) {
-//        this.technologyType = technologyType;
-//    }
-//
-//    public List<String> getModification() {
-//        return modification;
-//    }
-//
-//    public void setModification(List<String> modification) {
-//        this.modification = modification;
-//    }
-//
-//    public List<String> getSubmitterKeywords() {
-//        return submitterKeywords;
-//    }
-//
-//    public void setSubmitterKeywords(List<String> submitterKeywords) {
-//        this.submitterKeywords = submitterKeywords;
-//    }
-//
-//    public List<String> getQuantificationMethod() {
-//        return quantificationMethod;
-//    }
-//
-//    public void setQuantificationMethod(List<String> quantificationMethod) {
-//        this.quantificationMethod = quantificationMethod;
-//    }
-//
-//    public List<String> getSubmissionType() {
-//        return submissionType;
-//    }
-//
-//    public void setSubmissionType(List<String> submissionType) {
-//        this.submissionType = submissionType;
-//    }
-//
-//    public List<String> getSoftware() {
-//        return software;
-//    }
-//
-//    public void setSoftware(List<String> software) {
-//        this.software = software;
-//    }
-//
-//    public List<String> getPublication() {
-//        return publication;
-//    }
-//
-//    public void setPublication(List<String> publication) {
-//        this.publication = publication;
-//    }
-//
-//    public List<String> getDatasetFile() {
-//        return datasetFile;
-//    }
-//
-//    public void setDatasetFile(List<String> datasetFile) {
-//        this.datasetFile = datasetFile;
-//    }
-
     public String getDatabase() {
         return database;
     }
@@ -482,5 +277,61 @@ public class SolrEntry {
 
     public void setSearchCount(String searchCount) {
         this.searchCount = searchCount;
+    }
+
+    public String getReanalysisCount() {
+        return reanalysisCount;
+    }
+
+    public void setReanalysisCount(String reanalysisCount) {
+        this.reanalysisCount = reanalysisCount;
+    }
+
+    public List<String> getSubmitterKeywords() {
+        return submitterKeywords;
+    }
+
+    public void setSubmitterKeywords(List<String> submitterKeywords) {
+        this.submitterKeywords = submitterKeywords;
+    }
+
+    public List<String> getCuratorKeywords() {
+        return curatorKeywords;
+    }
+
+    public void setCuratorKeywords(List<String> curatorKeywords) {
+        this.curatorKeywords = curatorKeywords;
+    }
+
+    public Date getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public List<String> getENSEMBL() {
+        return ENSEMBL;
+    }
+
+    public void setENSEMBL(List<String> ENSEMBL) {
+        this.ENSEMBL = ENSEMBL;
+    }
+
+    public List<String> getUNIPROT() {
+        return UNIPROT;
+    }
+
+    public void setUNIPROT(List<String> UNIPROT) {
+        this.UNIPROT = UNIPROT;
+    }
+
+    public List<String> getCHEBI() {
+        return CHEBI;
+    }
+
+    public void setCHEBI(List<String> CHEBI) {
+        this.CHEBI = CHEBI;
     }
 }

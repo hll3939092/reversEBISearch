@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:solr="http://www.springframework.org/schema/c"
-       xmlns:jpa="http://www.springframework.org/schema/data/solr"
-       xsi:schemaLocation="http://www.springframework.org/schema/mvc
-	   					   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
-	   					   http://www.springframework.org/schema/beans
-	   					   http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-	   					   http://www.springframework.org/schema/context
-	   					   http://www.springframework.org/schema/context/spring-context-4.0.xsd
-	   					   http://www.springframework.org/schema/aop
-	   					   http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+
+
+                          http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-2.0.xsd"
        default-lazy-init="true">
 
     <!-- 配置扫描controller -->
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr"/>
 
-    <aop:aspectj-autoproxy/>
+    <!--<aop:aspectj-autoproxy/>-->
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
@@ -43,18 +40,9 @@
     <mvc:default-servlet-handler/>
     <context:annotation-config/>
 
-    <!--<mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>-->
-    <!--<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>-->
-    <!--&lt;!&ndash;<mvc:interceptors>&ndash;&gt;-->
-        <!--&lt;!&ndash;<mvc:interceptor>&ndash;&gt;-->
-            <!--&lt;!&ndash;&lt;!&ndash; 拦截所有的请求，这个必须写在前面，也就是写在【不拦截】的上面 &ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;<mvc:mapping path="/**" />&ndash;&gt;-->
-            <!--&lt;!&ndash;<mvc:exclude-mapping path="/swagger*/**"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<mvc:exclude-mapping path="/v2/**"/>&ndash;&gt;-->
-            <!--&lt;!&ndash;<mvc:exclude-mapping path="/webjars/**"/>&ndash;&gt;-->
-        <!--&lt;!&ndash;</mvc:interceptor>&ndash;&gt;-->
-    <!--&lt;!&ndash;</mvc:interceptors>&ndash;&gt;-->
-    <!--<bean class="cn.ncbsp.omicsdi.solr.swagger2.Swagger2Conf" />-->
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
+    <bean class="cn.ncbsp.omicsdi.solr.swagger2.Swagger2Conf"/>
 
 
     <!-- 配置视图解析器 -->
@@ -63,66 +51,16 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!-- 配置文件上传，如果没有使用文件上传可以不用配置，当然如果不配，那么配置文件中也不必引入上传组件包 -->
-    <bean id="multipartResolver"
-          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <!-- 默认编码 -->
-        <property name="defaultEncoding" value="utf-8"/>
-        <!-- 文件大小最大值 -->
-        <property name="maxUploadSize" value="10485760000"/>
-        <!-- 内存中的最大值 -->
-        <property name="maxInMemorySize" value="40960"/>
-    </bean>
 
-    <!-- 配置验证码 -->
-    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
-        <property name="config">
-            <bean class="com.google.code.kaptcha.util.Config">
-                <constructor-arg>
-                    <props>
-                        <!-- 图片边框 -->
-                        <prop key="kaptcha.border">no</prop>
-                        <!-- 图片宽度 -->
-                        <prop key="kaptcha.image.width">150</prop>
-                        <!-- 图片高度 -->
-                        <prop key="kaptcha.image.height">55</prop>
-                        <!-- 验证码背景颜色渐变，开始颜色 -->
-                        <prop key="kaptcha.background.clear.from">248,248,248</prop>
-                        <!-- 验证码背景颜色渐变，结束颜色 -->
-                        <prop key="kaptcha.background.clear.to">248,248,248</prop>
-                        <!-- 验证码的字符 -->
-                        <prop key="kaptcha.textproducer.char.string">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</prop>
-                        <!-- 验证码字体颜色 -->
-                        <prop key="kaptcha.textproducer.font.color">46,169,223</prop>
-                        <!-- 验证码的效果，水纹 -->
-                        <prop key="kaptcha.obscurificator.impl">com.google.code.kaptcha.impl.WaterRipple</prop>
-                        <!-- 验证码字体大小 -->
-                        <prop key="kaptcha.textproducer.font.size">35</prop>
-                        <!-- 验证码字数 -->
-                        <prop key="kaptcha.textproducer.char.length">6</prop>
-                        <!-- 验证码文字间距 -->
-                        <prop key="kaptcha.textproducer.char.space">2</prop>
-                        <!-- 验证码字体 -->
-                        <prop key="kaptcha.textproducer.font.names">new Font("Arial", 1, fontSize), new Font("Courier",
-                            1, fontSize)
-                        </prop>
-                        <!-- 不加噪声 -->
-                        <prop key="kaptcha.noise.impl">com.google.code.kaptcha.impl.NoNoise</prop>
-                    </props>
-                </constructor-arg>
-            </bean>
-        </property>
-    </bean>
-
-    <!--<bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>-->
+    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <!--<property name="parser" ref="XMLResponseParser"></property>-->
+        <property name="parser" ref="XMLResponseParser"></property>
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
-        <constructor-arg name="baseSolrUrl" value="http://127.0.0.1:8983/solr"></constructor-arg>
+        <constructor-arg name="baseSolrUrl" value="http://192.168.99.25:33669/solr/"></constructor-arg>
     </bean>
 
     <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
@@ -133,13 +71,35 @@
         <constructor-arg name="solrClient" ref="solrClient"></constructor-arg>
     </bean>
 
-    <jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />
+    <!--<jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />-->
 
     <!-- solr服务器地址 -->
     <!--<solr:solr-server id="solrServer" url="http://127.0.0.1:8080/solr" />-->
     <!--&lt;!&ndash; solr模板，使用solr模板可对索引库进行CRUD的操作 &ndash;&gt;-->
     <!--<bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">-->
-        <!--<constructor-arg ref="solrServer" />-->
+    <!--<constructor-arg ref="solrServer" />-->
     <!--</bean>-->
+
+    <mongo:mongo-client id="mongoClient" host="193.62.55.69" port="30304" credentials="ddi_user:V5f3SThe@admin">
+        <mongo:client-options connections-per-host="5"
+                              threads-allowed-to-block-for-connection-multiplier="10"
+                              connect-timeout="100000"
+                              max-wait-time="30000"
+                              socket-keep-alive="true"
+                              socket-timeout="1000000"
+                              write-concern="NORMAL"
+                              read-preference="PRIMARY_PREFERRED"/>
+    </mongo:mongo-client>
+
+    <mongo:db-factory dbname="ddi_db" mongo-ref="mongoClient"/>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+
+
+    <mongo:mapping-converter id="mappingConverter"
+                             db-factory-ref="mongoDbFactory"/>
+
 
 </beans>

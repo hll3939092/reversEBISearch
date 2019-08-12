@@ -1,6 +1,9 @@
 package cn.ncbsp.omicsdi.solr.queryModel;
 
-public class DismaxQueryModel implements IQModel{
+/**
+ * @author Xpon
+ */
+public class DismaxQueryModel implements IQModel {
     private String q;
     private String q_alt;
     private String qf;

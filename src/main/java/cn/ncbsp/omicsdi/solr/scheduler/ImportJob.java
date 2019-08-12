@@ -1,16 +1,13 @@
 package cn.ncbsp.omicsdi.solr.scheduler;
 
-import cn.ncbsp.omicsdi.solr.controller.DatasetController;
 import cn.ncbsp.omicsdi.solr.services.ISolrEntryService;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
 
+/**
+ * @author Xpon
+ */
 public class ImportJob {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportJob.class);
@@ -21,6 +18,10 @@ public class ImportJob {
     private String folderPath;
     private String solrCore;
     private String backupPath;
+
+    public ImportJob() {
+
+    }
 
     public String getBackupPath() {
         return backupPath;
@@ -44,10 +45,6 @@ public class ImportJob {
 
     public void setSolrCore(String solrCore) {
         this.solrCore = solrCore;
-    }
-
-    public ImportJob() {
-
     }
 
     public void importData() {

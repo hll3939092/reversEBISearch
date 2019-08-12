@@ -1,4 +1,3 @@
-
 package cn.ncbsp.omicsdi.solr.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,9 +9,9 @@ import java.io.Serializable;
 
 /**
  * <p>Java class for refType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="refType"&gt;
  *   &lt;complexContent&gt;
@@ -31,8 +30,6 @@ import java.io.Serializable;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "refType")
@@ -48,11 +45,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Gets the value of the dbname property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDbname() {
         return dbname;
@@ -60,11 +55,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Sets the value of the dbname property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDbname(String value) {
         this.dbname = value;
@@ -72,11 +65,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Gets the value of the dbkey property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDbkey() {
         return dbkey;
@@ -84,11 +75,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Sets the value of the dbkey property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDbkey(String value) {
         this.dbkey = value;
@@ -96,11 +85,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Gets the value of the boost property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Float }
-     *     
+     *
+     * @return possible object is
+     * {@link Float }
      */
     public Float getBoost() {
         return boost;
@@ -108,11 +95,9 @@ public class Reference implements Serializable, IDataObject {
 
     /**
      * Sets the value of the boost property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Float }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Float }
      */
     public void setBoost(Float value) {
         this.boost = value;

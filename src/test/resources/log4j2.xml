@@ -21,7 +21,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
             <!--最多保留20个日志文件-->
-            <DefaultRolloverStrategy max="20" min="1" />
+            <DefaultRolloverStrategy max="20" min="1"/>
         </RollingFile>
 
         <RollingFile name="RollingFileInfo" fileName="${web:rootDir}/logs/info.log"
@@ -36,7 +36,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
             <!--最多保留20个日志文件-->
-            <DefaultRolloverStrategy max="20" min="1" />
+            <DefaultRolloverStrategy max="20" min="1"/>
         </RollingFile>
 
         <RollingFile name="RollingFileWarn" fileName="${web:rootDir}/logs/warn.log"
@@ -51,7 +51,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
             <!--最多保留20个日志文件-->
-            <DefaultRolloverStrategy max="20" min="1" />
+            <DefaultRolloverStrategy max="20" min="1"/>
         </RollingFile>
 
         <RollingFile name="RollingFileError" fileName="${web:rootDir}/logs/error.log"
@@ -63,7 +63,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
             <!--最多保留20个日志文件-->
-            <DefaultRolloverStrategy max="20" min="1" />
+            <DefaultRolloverStrategy max="20" min="1"/>
         </RollingFile>
 
         <RollingFile name="RollingFileFatal" fileName="${web:rootDir}/logs/fatal.log"
@@ -75,7 +75,7 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
             <!--最多保留20个日志文件-->
-            <DefaultRolloverStrategy max="20" min="1" />
+            <DefaultRolloverStrategy max="20" min="1"/>
         </RollingFile>
     </Appenders>
     <Loggers>

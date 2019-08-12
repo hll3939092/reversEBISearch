@@ -10,9 +10,13 @@ import java.util.List;
 
 public interface SolrEntryRepo<T> {
     void saveEntry(String core, SolrEntry entry);
+
     void saveEntryList(String core, List<SolrEntry> entries);
+
     SolrResultPage<T> getQueryResult(String core, Query query, Class<T> clazz);
+
     FacetPage<T> getFacetQueryResult(String core, FacetQuery query, Class<T> clazz);
+
     SolrResultPage<T> getSuggestQueryResult(String core, Query query, Class<T> clazz);
 }
 

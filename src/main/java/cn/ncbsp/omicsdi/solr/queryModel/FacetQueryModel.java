@@ -2,9 +2,11 @@ package cn.ncbsp.omicsdi.solr.queryModel;
 
 /**
  * 分面对象
+ *
+ * @author Xpon
  */
 
-public class FacetQueryModel extends SimpleQueryModel implements IQModel{
+public class FacetQueryModel extends SimpleQueryModel implements IQModel {
     private String facet_query;
     private String facet_field;
     private String facet_prefix;
@@ -38,6 +40,7 @@ public class FacetQueryModel extends SimpleQueryModel implements IQModel{
 
 
     public FacetQueryModel() {
+        super();
     }
 
     public String getFacet_query() {

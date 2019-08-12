@@ -19,13 +19,15 @@ public class SolrQueryBuilder {
      */
     public static SimpleQuery buildQuery(QueryModel queryModel) {
         SimpleQuery simpleQuery = null;
-        if(StringUtils.isBlank(queryModel.getQuery())) {
+        if (StringUtils.isBlank(queryModel.getQuery())) {
             simpleQuery = new SimpleQuery("*:*");
-        }else {
+        } else {
             simpleQuery = new SimpleQuery(queryModel.getQuery());
         }
         return simpleQuery;
-    };
+    }
+
+    ;
 
 
     /*
@@ -36,7 +38,7 @@ public class SolrQueryBuilder {
      */
     public static SimpleFacetQuery buildSimpleFacetQuery(QueryModel queryModel) {
 
-        if(queryModel == null) {
+        if (queryModel == null) {
             return null;
         }
 
@@ -44,33 +46,33 @@ public class SolrQueryBuilder {
         Criteria criteria = new Criteria();
 
         // 生成query
-        if(StringUtils.isBlank(queryModel.getQuery())) {
+        if (StringUtils.isBlank(queryModel.getQuery())) {
             simpleFacetQuery = new SimpleFacetQuery(criteria.expression("*:*"));
-        }else {
+        } else {
             simpleFacetQuery = new SimpleFacetQuery(criteria.expression(queryModel.getQuery()));
         }
 
         // 添加rows
-        if(queryModel.getSize() != 0) {
+        if (queryModel.getSize() != 0) {
             simpleFacetQuery.setRows(queryModel.getSize());
         }
 
         // 添加facet功能
         FacetOptions facetOptions = new FacetOptions();
-        if(queryModel.getFacets().length >0 || queryModel.getFacets() != null) {
-            for(String field : queryModel.getFacets()) {
+        if (queryModel.getFacets().length > 0 || queryModel.getFacets() != null) {
+            for (String field : queryModel.getFacets()) {
                 facetOptions.addFacetOnField(field);
             }
 
         }
         // todo 其他的facet功能
         // 控制facet页数
-        if(queryModel.getFacetcount() != 0) {
+        if (queryModel.getFacetcount() != 0) {
             facetOptions.setFacetLimit(queryModel.getFacetcount());
         }
 
         // 检测是否包含facet
-        if(facetOptions.hasFacets()){
+        if (facetOptions.hasFacets()) {
             simpleFacetQuery.setFacetOptions(facetOptions);
         }
 
@@ -79,10 +81,10 @@ public class SolrQueryBuilder {
     }
 
 
-    private static Criteria buildCriteria(Criteria criteria,Map<String,List<String>> attribute) {
+    private static Criteria buildCriteria(Criteria criteria, Map<String, List<String>> attribute) {
         Set<String> attributeKey = attribute.keySet();
 
-        for(String key : attributeKey) {
+        for (String key : attributeKey) {
             List<String> qValues = attribute.get(key);
             criteria = criteria.where(key).in(qValues);
         }
@@ -90,8 +92,8 @@ public class SolrQueryBuilder {
         return criteria;
     }
 
-    private static FacetOptions buildFacetOptions(FacetOptions facetOptions,List<String> attributes) {
-        for(String attribute : attributes) {
+    private static FacetOptions buildFacetOptions(FacetOptions facetOptions, List<String> attributes) {
+        for (String attribute : attributes) {
             facetOptions = facetOptions.addFacetOnField(attribute);
         }
         return facetOptions;

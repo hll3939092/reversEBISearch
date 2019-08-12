@@ -2,11 +2,17 @@ package cn.ncbsp.omicsdi.solr.services;
 
 import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
 import cn.ncbsp.omicsdi.solr.solrmodel.QueryResult;
-import org.springframework.stereotype.Service;
 
 
+/**
+ * @author Xpon
+ */
 public interface IDomainSearchService {
 
+    /**
+     * @param queryModel
+     * @return
+     */
     /*
             @PathVariable(value = "domain") String domain,
             @RequestParam(value = "query",required = false, defaultValue = "") String query,

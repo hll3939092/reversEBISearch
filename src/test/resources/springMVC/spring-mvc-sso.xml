@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:solr="http://www.springframework.org/schema/c"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:jpa="http://www.springframework.org/schema/data/solr"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/mvc
 	   					   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 	   					   http://www.springframework.org/schema/beans
@@ -12,7 +13,9 @@
 	   					   http://www.springframework.org/schema/context
 	   					   http://www.springframework.org/schema/context/spring-context-4.0.xsd
 	   					   http://www.springframework.org/schema/aop
-	   					   http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd"
+	   					   http://www.springframework.org/schema/aop/spring-aop.xsd
+	   					   http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd
+                         http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-2.0.xsd"
        default-lazy-init="true">
 
     <!-- 配置扫描controller -->
@@ -20,7 +23,7 @@
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr.repo"/>
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr.controller"/>
     <context:component-scan base-package="cn.ncbsp.omicsdi.solr.scheduler"/>
-    <jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />
+    <jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo"/>
 
     <aop:aspectj-autoproxy/>
     <mvc:annotation-driven>
@@ -102,7 +105,9 @@
                         <!-- 验证码背景颜色渐变，结束颜色 -->
                         <prop key="kaptcha.background.clear.to">248,248,248</prop>
                         <!-- 验证码的字符 -->
-                        <prop key="kaptcha.textproducer.char.string">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</prop>
+                        <prop key="kaptcha.textproducer.char.string">
+                            0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+                        </prop>
                         <!-- 验证码字体颜色 -->
                         <prop key="kaptcha.textproducer.font.color">46,169,223</prop>
                         <!-- 验证码的效果，水纹 -->
@@ -129,22 +134,45 @@
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <!--<property name="parser" ref="XMLResponseParser"></property>-->
+        <property name="parser" ref="XMLResponseParser"></property>
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
-        <constructor-arg name="baseSolrUrl" value="http://127.0.0.1:8983/solr"></constructor-arg>
+        <constructor-arg name="baseSolrUrl" value="http://192.168.6.20:9009/solr/"></constructor-arg>
     </bean>
 
     <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">
         <constructor-arg name="solrClient" ref="solrClient"></constructor-arg>
     </bean>
 
-    <!-- solr服务器地址 -->
+    <!--solr服务器地址 -->
     <!--<solr:solr-server id="solrServer" url="http://127.0.0.1:8080/solr" />-->
     <!--&lt;!&ndash; solr模板，使用solr模板可对索引库进行CRUD的操作 &ndash;&gt;-->
     <!--<bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate">-->
-        <!--<constructor-arg ref="solrServer" />-->
+    <!--<constructor-arg ref="solrServer" />-->
     <!--</bean>-->
+
+    <mongo:mongo-client
+            credentials="${ddi.mongo.app.user}:${ddi.mongo.app.password}@${ddi.mongo.app.authenticationDatabase}"
+            id="mongoClient" replica-set="localhost:27017">
+        <mongo:client-options connections-per-host="5"
+                              threads-allowed-to-block-for-connection-multiplier="10"
+                              connect-timeout="100000"
+                              max-wait-time="30000"
+                              socket-keep-alive="true"
+                              socket-timeout="1000000"
+                              write-concern="NORMAL"
+                              read-preference="PRIMARY_PREFERRED"/>
+    </mongo:mongo-client>
+
+    <mongo:db-factory dbname="${ddi.mongo.app.db}" mongo-ref="mongoClient"/>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+    </bean>
+
+
+    <mongo:mapping-converter id="mappingConverter"
+                             db-factory-ref="mongoDbFactory"/>
 
 </beans>

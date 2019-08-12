@@ -1,6 +1,9 @@
 package cn.ncbsp.omicsdi.solr.queryModel;
 
-public class CommonQueryParamModel implements IQModel{
+/**
+ * @author Xpon
+ */
+public class CommonQueryParamModel implements IQModel {
     private String defType;
     private String sort;
     private String start;

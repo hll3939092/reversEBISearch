@@ -31,8 +31,8 @@ public class SolrEntryRepoImpl<T> implements SolrEntryRepo<T> {
 
     @Override
     public void saveEntry(String core, SolrEntry entry) {
-        UpdateResponse updateResponse = solrTemplate.saveBean(core,entry);
-        if(updateResponse.getStatus() != 0){
+        UpdateResponse updateResponse = solrTemplate.saveBean(core, entry);
+        if (updateResponse.getStatus() != 0) {
             // todo
             // exception
             /*
@@ -47,8 +47,8 @@ public class SolrEntryRepoImpl<T> implements SolrEntryRepo<T> {
 
     @Override
     public void saveEntryList(String core, List<SolrEntry> entries) {
-        UpdateResponse updateResponse = solrTemplate.saveBeans(core,entries);
-        if(updateResponse.getStatus() != 0){
+        UpdateResponse updateResponse = solrTemplate.saveBeans(core, entries);
+        if (updateResponse.getStatus() != 0) {
             // todo
             // exception
 //            solrTemplate.rollback(core);
@@ -59,19 +59,19 @@ public class SolrEntryRepoImpl<T> implements SolrEntryRepo<T> {
 
     @Override
     public SolrResultPage<T> getQueryResult(String core, Query query, Class<T> clazz) {
-        SolrResultPage<T> solrEntrySolrResultPage = solrTemplate.query(core,query, clazz);
+        SolrResultPage<T> solrEntrySolrResultPage = solrTemplate.query(core, query, clazz);
         return solrEntrySolrResultPage;
     }
 
     @Override
     public FacetPage<T> getFacetQueryResult(String core, FacetQuery query, Class<T> clazz) {
-        FacetPage<T> solrEntrySolrResultPage = solrTemplate.queryForFacetPage(core,query,clazz);
+        FacetPage<T> solrEntrySolrResultPage = solrTemplate.queryForFacetPage(core, query, clazz);
         return solrEntrySolrResultPage;
     }
 
     @Override
     public SolrResultPage<T> getSuggestQueryResult(String core, Query query, Class<T> clazz) {
-        SolrResultPage<T> solrResultPage = solrSuggestTemplate.query(core,query,clazz);
+        SolrResultPage<T> solrResultPage = solrSuggestTemplate.query(core, query, clazz);
 
         return solrResultPage;
     }

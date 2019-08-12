@@ -5,14 +5,11 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SuggesterResponse;
-import org.apache.solr.client.solrj.response.Suggestion;
-import org.apache.solr.common.SolrDocumentList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.solr.core.QueryParsers;
 import org.springframework.data.solr.core.RequestMethod;
@@ -21,12 +18,9 @@ import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.convert.SolrConverter;
 import org.springframework.data.solr.core.mapping.SolrPersistentEntity;
 import org.springframework.data.solr.core.mapping.SolrPersistentProperty;
-import org.springframework.data.solr.core.query.FacetQuery;
-import org.springframework.data.solr.core.query.HighlightQuery;
 import org.springframework.data.solr.core.query.Query;
 import org.springframework.data.solr.core.query.SolrDataQuery;
 import org.springframework.data.solr.core.query.result.SolrResultPage;
-import org.springframework.data.solr.core.query.result.SpellcheckQueryResult;
 import org.springframework.data.solr.core.schema.SolrPersistentEntitySchemaCreator;
 import org.springframework.data.solr.server.SolrClientFactory;
 import org.springframework.lang.Nullable;
@@ -36,30 +30,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /*
-*   @author Pan
-*   重新封装了一次solrTemplate，专门为suggestAPI用
-*
-*
+ *   @author Pan
+ *   重新封装了一次solrTemplate，专门为suggestAPI用
+ *
+ *
  */
 
 public class SolrSuggestTemplate extends SolrTemplate {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolrSuggestTemplate.class);
     private static final PersistenceExceptionTranslator EXCEPTION_TRANSLATOR = new SolrExceptionTranslator();
-    private @Nullable
-    QueryParsers queryParsers;
-    private @Nullable
-    MappingContext<? extends SolrPersistentEntity<?>, SolrPersistentProperty> mappingContext;
-
-    private @Nullable
-    ApplicationContext applicationContext;
-
-    private @Nullable SolrClientFactory solrClientFactory;
-
-    private @Nullable SolrConverter solrConverter;
-
-    private Set<SolrPersistentEntitySchemaCreator.Feature> schemaCreationFeatures = Collections.emptySet();
-
     @SuppressWarnings("serial") //
     private static final List<String> ITERABLE_CLASSES = new ArrayList<String>() {
         {
@@ -68,6 +48,17 @@ public class SolrSuggestTemplate extends SolrTemplate {
             add(Iterator.class.getName());
         }
     };
+    private @Nullable
+    QueryParsers queryParsers;
+    private @Nullable
+    MappingContext<? extends SolrPersistentEntity<?>, SolrPersistentProperty> mappingContext;
+    private @Nullable
+    ApplicationContext applicationContext;
+    private @Nullable
+    SolrClientFactory solrClientFactory;
+    private @Nullable
+    SolrConverter solrConverter;
+    private Set<SolrPersistentEntitySchemaCreator.Feature> schemaCreationFeatures = Collections.emptySet();
 
 
     public SolrSuggestTemplate(SolrClient solrClient) {
@@ -94,10 +85,12 @@ public class SolrSuggestTemplate extends SolrTemplate {
         super(solrClientFactory, solrConverter, defaultRequestMethod);
     }
 
+    @Override
     public <T, S extends Page<T>> S query(String collection, Query query, Class<T> clazz) {
         return query(collection, query, clazz, getDefaultRequestMethod());
     }
 
+    @Override
     public <T, S extends Page<T>> S query(String collection, Query query, Class<T> clazz, RequestMethod method) {
 
         Assert.notNull(collection, "Collection must not be null!");
@@ -151,8 +144,7 @@ public class SolrSuggestTemplate extends SolrTemplate {
     }
 
 
-    final QueryResponse executeSolrQuery(String collection, final SolrQuery solrQuery, final SolrRequest.METHOD method)
-    {
+    final QueryResponse executeSolrQuery(String collection, final SolrQuery solrQuery, final SolrRequest.METHOD method) {
         return execute(solrServer -> solrServer.query(collection, solrQuery, method));
     }
 

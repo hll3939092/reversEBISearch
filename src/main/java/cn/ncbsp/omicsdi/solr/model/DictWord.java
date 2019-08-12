@@ -13,9 +13,10 @@ public class DictWord {
 
     List<Item> items = new ArrayList<>();
 
-    public DictWord(){
+    public DictWord() {
 
     }
+
     public DictWord(int total_count, List<Item> items) {
         this.total_count = total_count;
         this.items = items;

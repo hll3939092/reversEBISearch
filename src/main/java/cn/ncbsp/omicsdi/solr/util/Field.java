@@ -42,7 +42,7 @@ public enum Field {
     CELL_TYPE_FIELD("cell_type", FieldType.UNKNOWN, FieldCategory.ADDITIONAL, "Cell Type"),
     DISEASE_FIELD("disease", FieldType.UNKNOWN, FieldCategory.ADDITIONAL, "Disease"),
     TISSUE_FIELD("tissue", FieldType.UNKNOWN, FieldCategory.ADDITIONAL, "Tissue"),
-    SECONDARY_ACCESSION("additional_accession", FieldType.OPTIONAL,FieldCategory.ADDITIONAL, "Secondary Accession"),
+    SECONDARY_ACCESSION("additional_accession", FieldType.OPTIONAL, FieldCategory.ADDITIONAL, "Secondary Accession"),
     ENSEMBL_EXPRESSION_ATLAS("ensembl", FieldType.UNKNOWN, FieldCategory.CROSSREF, "Gene reference to ENSEMBL"),
 
     SUBMITTER_KEYWORDS("submitter_keywords", FieldType.UNKNOWN, FieldCategory.ADDITIONAL, "Submitter Keywords"),
@@ -59,7 +59,7 @@ public enum Field {
     FUNDING("funding", FieldType.OPTIONAL, FieldCategory.ADDITIONAL, "Funding agency or grant"),
     CURATOR_KEYWORDS("curator_keywords", FieldType.UNKNOWN, FieldCategory.ADDITIONAL, "Submitter Keywords"),
     DATASET_TYPE("dataset_type", FieldType.MANDATORY, FieldCategory.ADDITIONAL, "Type of Experiment"),
-    GENE_NAME("gene_name",FieldType.OPTIONAL ,FieldCategory.ADDITIONAL , "Additional Gene Name");
+    GENE_NAME("gene_name", FieldType.OPTIONAL, FieldCategory.ADDITIONAL, "Additional Gene Name");
 
     private final String name;
     private final FieldType type;
@@ -78,14 +78,35 @@ public enum Field {
     /**
      * Return a set of Properties by the Type of the Field if they are mandatory or
      * not.
+     *
      * @param type
      * @return
      */
-    public static List<Field> getValuesByType(FieldType type){
+    public static List<Field> getValuesByType(FieldType type) {
         Field[] values = Field.values();
         List<Field> vReturn = new ArrayList<>();
-        for (Field value: values){
-            if(value.getType() == type)
+        for (Field value : values) {
+            if (value.getType() == type)
+                vReturn.add(value);
+        }
+        return vReturn;
+    }
+
+    public static List<Field> getValuesByCategory(FieldCategory category) {
+        Field[] values = Field.values();
+        List<Field> vReturn = new ArrayList<>();
+        for (Field value : values) {
+            if (value.getCategory() == category)
+                vReturn.add(value);
+        }
+        return vReturn;
+    }
+
+    public static List<Field> getValuesByCategory(FieldCategory category, FieldType unknown) {
+        Field[] values = Field.values();
+        List<Field> vReturn = new ArrayList<>();
+        for (Field value : values) {
+            if (value.getCategory() == category && !(value.getType() == unknown))
                 vReturn.add(value);
         }
         return vReturn;
@@ -103,27 +124,7 @@ public enum Field {
         return category;
     }
 
-    public static List<Field> getValuesByCategory(FieldCategory category){
-        Field[] values = Field.values();
-        List<Field> vReturn = new ArrayList<>();
-        for (Field value: values){
-            if(value.getCategory() == category)
-                vReturn.add(value);
-        }
-        return vReturn;
-    }
-
     public String getFullName() {
         return fullName;
-    }
-
-    public static List<Field> getValuesByCategory(FieldCategory category, FieldType unknown) {
-        Field[] values = Field.values();
-        List<Field> vReturn = new ArrayList<>();
-        for (Field value: values){
-            if(value.getCategory() == category && !(value.getType() == unknown))
-                vReturn.add(value);
-        }
-        return vReturn;
     }
 }

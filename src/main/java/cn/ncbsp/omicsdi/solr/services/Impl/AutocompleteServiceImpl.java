@@ -2,11 +2,9 @@ package cn.ncbsp.omicsdi.solr.services.Impl;
 
 
 import cn.ncbsp.omicsdi.solr.model.Suggestions;
-import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
 import cn.ncbsp.omicsdi.solr.repo.SolrEntryRepo;
 import cn.ncbsp.omicsdi.solr.services.IAutocompleteService;
 import cn.ncbsp.omicsdi.solr.solrmodel.SolrEntry;
-import cn.ncbsp.omicsdi.solr.util.SolrQueryBuilder;
 import org.apache.solr.client.solrj.response.Suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.solr.core.query.SimpleQuery;
@@ -17,6 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * @author Xpon
+ */
 @Service
 public class AutocompleteServiceImpl implements IAutocompleteService {
 
@@ -26,10 +27,10 @@ public class AutocompleteServiceImpl implements IAutocompleteService {
     SolrEntryRepo<SolrEntry> solrEntryRepo;
 
     @Override
-    public Suggestions getSuggestions(String core,String str,Class clazz) {
+    public Suggestions getSuggestions(String core, String str, Class clazz) {
         SimpleQuery simpleQuery = new SimpleQuery(str);
         simpleQuery.setRequestHandler(DEFAULT_SUGGEST_HANDLER);
-        SolrResultPage<LinkedList<Suggestion>> solrResultPage = solrEntryRepo.getSuggestQueryResult(core,simpleQuery,clazz);
+        SolrResultPage<LinkedList<Suggestion>> solrResultPage = solrEntryRepo.getSuggestQueryResult(core, simpleQuery, clazz);
 
         // todo remove hardcode
         List<Suggestion> list = solrResultPage.getContent().get(0);
@@ -38,7 +39,7 @@ public class AutocompleteServiceImpl implements IAutocompleteService {
             cn.ncbsp.omicsdi.solr.model.Suggestion suggestion = new cn.ncbsp.omicsdi.solr.model.Suggestion();
             suggestion.setSuggestion(x.getTerm());
             return suggestion;
-        }).toArray(cn.ncbsp.omicsdi.solr.model.Suggestion[] :: new);
+        }).toArray(cn.ncbsp.omicsdi.solr.model.Suggestion[]::new);
         Suggestions suggestions = new Suggestions();
         suggestions.setEntries(suggestionCollection);
         return suggestions;
