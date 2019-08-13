@@ -183,9 +183,9 @@
 
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.solr/solr-solrj &ndash;&gt;-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.solr</groupId>-->
-            <!--<artifactId>solr-solrj</artifactId>-->
-            <!--<version>8.2.0</version>-->
+        <!--<groupId>org.apache.solr</groupId>-->
+        <!--<artifactId>solr-solrj</artifactId>-->
+        <!--<version>8.2.0</version>-->
         <!--</dependency>-->
 
 

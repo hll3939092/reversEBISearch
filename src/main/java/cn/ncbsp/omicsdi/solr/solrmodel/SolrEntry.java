@@ -56,6 +56,80 @@ public class SolrEntry {
     @Field(value = "reanalysis_count")
     String reanalysisCount;
 
+
+    /*
+     * news
+     */
+    @Field(value = "download_count_scaled")
+    String downloadCountScaled;
+
+    @Field(value = "citation_count_scaled")
+    String citationCountScaled;
+
+    @Field(value = "reanalysis_count_scaled")
+    String reanalysisCountScaled;
+
+    @Field(value = "view_count_scaled")
+    String viewCountScaled;
+
+    @Field(value = "dataset_file")
+    List<String> datasetFile;
+
+    @Field(value = "software")
+    List<String> software;
+
+    @Field(value = "full_dataset_link")
+    List<String> fullDatasetLink;
+
+    @Field(value = "download_count")
+    String downloadCount;
+
+    @Field(value = "sample_synonyms")
+    String sampleSynonyms;
+
+    @Field(value = "data_synonyms")
+    String dataSynonyms;
+
+    @Field(value = "name_synonyms")
+    String nameSynonyms;
+
+    @Field(value = "description_synonyms")
+    String descriptionSynonyms;
+
+
+    @Field(value = "repository")
+    List<String> repository;
+
+    @Field(value = "submitter_email")
+    List<String> submitterEmail;
+
+    @Field(value = "submitter")
+    List<String> submitter;
+
+
+    @Field(value = "species")
+    List<String> species;
+
+    @Field(value = "secondary_accession")
+    List<String> secondaryAccession;
+
+    @Field(value = "pubmed_title")
+    List<String> pubmedTitle;
+
+    @Field(value = "pubmed_authors")
+    List<String> pubmedAuthors;
+
+
+    @Field(value = "pubmed_title_synonyms")
+    String pubmedTitleSynonyms;
+
+    @Field(value = "pubmed_abstract_synonyms")
+    String pubmedAbstractSynonyms;
+/*
+news
+ */
+
+
     @Field(value = "TAXONOMY")
     List<String> taxonomy;
 
@@ -333,5 +407,174 @@ public class SolrEntry {
 
     public void setCHEBI(List<String> CHEBI) {
         this.CHEBI = CHEBI;
+    }
+
+    public String getDownloadCountScaled() {
+        return downloadCountScaled;
+    }
+
+    public void setDownloadCountScaled(String downloadCountScaled) {
+        this.downloadCountScaled = downloadCountScaled;
+    }
+
+    public String getCitationCountScaled() {
+        return citationCountScaled;
+    }
+
+    public void setCitationCountScaled(String citationCountScaled) {
+        this.citationCountScaled = citationCountScaled;
+    }
+
+    public String getReanalysisCountScaled() {
+        return reanalysisCountScaled;
+    }
+
+    public void setReanalysisCountScaled(String reanalysisCountScaled) {
+        this.reanalysisCountScaled = reanalysisCountScaled;
+    }
+
+    public String getViewCountScaled() {
+        return viewCountScaled;
+    }
+
+    public void setViewCountScaled(String viewCountScaled) {
+        this.viewCountScaled = viewCountScaled;
+    }
+
+    public List<String> getDatasetFile() {
+        return datasetFile;
+    }
+
+    public void setDatasetFile(List<String> datasetFile) {
+        this.datasetFile = datasetFile;
+    }
+
+    public List<String> getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(List<String> software) {
+        this.software = software;
+    }
+
+    public List<String> getFullDatasetLink() {
+        return fullDatasetLink;
+    }
+
+    public void setFullDatasetLink(List<String> fullDatasetLink) {
+        this.fullDatasetLink = fullDatasetLink;
+    }
+
+    public String getDownloadCount() {
+        return downloadCount;
+    }
+
+    public void setDownloadCount(String downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+
+
+    public List<String> getRepository() {
+        return repository;
+    }
+
+    public void setRepository(List<String> repository) {
+        this.repository = repository;
+    }
+
+    public List<String> getSubmitterEmail() {
+        return submitterEmail;
+    }
+
+    public void setSubmitterEmail(List<String> submitterEmail) {
+        this.submitterEmail = submitterEmail;
+    }
+
+    public List<String> getSubmitter() {
+        return submitter;
+    }
+
+    public void setSubmitter(List<String> submitter) {
+        this.submitter = submitter;
+    }
+
+    public List<String> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(List<String> species) {
+        this.species = species;
+    }
+
+    public List<String> getSecondaryAccession() {
+        return secondaryAccession;
+    }
+
+    public void setSecondaryAccession(List<String> secondaryAccession) {
+        this.secondaryAccession = secondaryAccession;
+    }
+
+    public List<String> getPubmedTitle() {
+        return pubmedTitle;
+    }
+
+    public void setPubmedTitle(List<String> pubmedTitle) {
+        this.pubmedTitle = pubmedTitle;
+    }
+
+    public List<String> getPubmedAuthors() {
+        return pubmedAuthors;
+    }
+
+    public void setPubmedAuthors(List<String> pubmedAuthors) {
+        this.pubmedAuthors = pubmedAuthors;
+    }
+
+    public String getSampleSynonyms() {
+        return sampleSynonyms;
+    }
+
+    public void setSampleSynonyms(String sampleSynonyms) {
+        this.sampleSynonyms = sampleSynonyms;
+    }
+
+    public String getDataSynonyms() {
+        return dataSynonyms;
+    }
+
+    public void setDataSynonyms(String dataSynonyms) {
+        this.dataSynonyms = dataSynonyms;
+    }
+
+    public String getNameSynonyms() {
+        return nameSynonyms;
+    }
+
+    public void setNameSynonyms(String nameSynonyms) {
+        this.nameSynonyms = nameSynonyms;
+    }
+
+    public String getDescriptionSynonyms() {
+        return descriptionSynonyms;
+    }
+
+    public void setDescriptionSynonyms(String descriptionSynonyms) {
+        this.descriptionSynonyms = descriptionSynonyms;
+    }
+
+    public String getPubmedTitleSynonyms() {
+        return pubmedTitleSynonyms;
+    }
+
+    public void setPubmedTitleSynonyms(String pubmedTitleSynonyms) {
+        this.pubmedTitleSynonyms = pubmedTitleSynonyms;
+    }
+
+    public String getPubmedAbstractSynonyms() {
+        return pubmedAbstractSynonyms;
+    }
+
+    public void setPubmedAbstractSynonyms(String pubmedAbstractSynonyms) {
+        this.pubmedAbstractSynonyms = pubmedAbstractSynonyms;
     }
 }

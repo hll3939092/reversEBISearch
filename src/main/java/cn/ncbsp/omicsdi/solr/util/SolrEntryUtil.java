@@ -17,6 +17,8 @@ public class SolrEntryUtil {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         list.forEach(entry -> {
             SolrEntry solrEntry = new SolrEntry();
+
+
             solrEntry.setId(entry.getId());
             solrEntry.setAcc(entry.getAcc());
             solrEntry.setName(entry.getName().getValue());// ???
@@ -36,9 +38,9 @@ public class SolrEntryUtil {
                         case "updated":
                             solrEntry.setDateUpdated(date.getValue());
                         case "creation":
-                            solrEntry.setDateOthers(date.getValue());
+                            solrEntry.setDateCreation(date.getValue());
                         default:
-                            // todo error
+                            solrEntry.setDateOthers(date.getValue());
                     }
                 });
             }
@@ -84,44 +86,148 @@ public class SolrEntryUtil {
             List<String> omicsTypes = new ArrayList<>();
             List<String> submitterKeywords = new ArrayList<>();
             List<String> curatorKeywords = new ArrayList<>();
+            List<String> datasetFiles = new ArrayList<>();
+            List<String> softwares = new ArrayList<>();
+            List<String> fulldatasetLinks = new ArrayList<>();
+            List<String> repositories = new ArrayList<>();
+            List<String> submitterEmails = new ArrayList<>();
+            List<String> submitters = new ArrayList<>();
+            List<String> species = new ArrayList<>();
+
+            List<String> secondaryAccession = new ArrayList<>();
+            List<String> pubmedTitles = new ArrayList<>();
+            List<String> pubmedAuthors = new ArrayList<>();
 
             entry.getAdditionalFields().getField().forEach(field -> {
-                if (field.getName().equals("pubmed_abstract")) {
-                    solrEntry.setPubmedAbstract(field.getValue());
-                } else if (field.getName().equals("view_count")) {
-                    solrEntry.setViewCount(field.getValue());
-                } else if (field.getName().equals("citation_count")) {
-                    solrEntry.setCitationCount(field.getValue());
-                } else if (field.getName().equals("search_count")) {
-                    solrEntry.setSearchCount(field.getValue());
-                } else if (field.getName().equals("reanalysis_count")) {
-                    solrEntry.setReanalysisCount(field.getValue());
-                } else if (field.getName().equals("tissue")) {
-                    tissues.add(field.getValue());
-                } else if (field.getName().equals("disease")) {
-                    diseases.add(field.getValue());
-                } else if (field.getName().equals("omics_type")) {
-                    omicsTypes.add(field.getValue());
-                } else if (field.getName().equals("submitter_keywords")) {
-                    submitterKeywords.add(field.getValue());
-                } else if (field.getName().equals("curator_keywords")) {
-                    curatorKeywords.add(field.getValue());
-                } else if (field.getName().equals("data_protocol")) {
-                    solrEntry.setDataProtocol(field.getValue());
-                } else if (field.getName().equals("sample_protocol")) {
-                    solrEntry.setSampleProtocol(field.getValue());
-                } else {
-                    if (null == additionalMap.get("additional_" + field.getName())) {
-                        List<String> listForMap = new ArrayList<>();
-                        listForMap.add(field.getValue());
-                        additionalMap.put("additional_" + field.getName(), listForMap);
-                    } else {
-                        List<String> listField = additionalMap.get("additional_" + field.getName());
-                        listField.add(field.getValue());
-                        additionalMap.put("additional_" + field.getName(), listField);
-                    }
+                switch (field.getName()) {
+                    case "pubmed_abstract":
+                        solrEntry.setPubmedAbstract(field.getValue());
+                        break;
+                    case "view_count":
+                        solrEntry.setViewCount(field.getValue());
+                        break;
+                    case "citation_count":
+                        solrEntry.setCitationCount(field.getValue());
+                        break;
+                    case "search_count":
+                        solrEntry.setSearchCount(field.getValue());
+                        break;
+                    case "reanalysis_count":
+                        solrEntry.setReanalysisCount(field.getValue());
+                        break;
+                    case "tissue":
+                        tissues.add(field.getValue());
+                        break;
+                    case "disease":
+                        diseases.add(field.getValue());
+                        break;
+                    case "omics_type":
+                        omicsTypes.add(field.getValue());
+                        break;
+                    case "submitter_keywords":
+                        submitterKeywords.add(field.getValue());
+                        break;
+                    case "curator_keywords":
+                        curatorKeywords.add(field.getValue());
+                        break;
+                    case "data_protocol":
+                        solrEntry.setDataProtocol(field.getValue());
+                        break;
+                    case "sample_protocol":
+                        solrEntry.setSampleProtocol(field.getValue());
+                        break;
+                    //????
+                    case "download_count_scaled":
+                        solrEntry.setDownloadCountScaled(field.getValue());
+                        break;
+                    case "citation_count_scaled":
+                        solrEntry.setCitationCountScaled(field.getValue());
+                        break;
+                    case "reanalysis_count_scaled":
+                        solrEntry.setReanalysisCountScaled(field.getValue());
+                        break;
+                    case "view_count_scaled":
+                        solrEntry.setViewCountScaled(field.getValue());
+                        break;
+                    case "dataset_file":
+                        datasetFiles.add(field.getValue());
+                        break;
+                    case "software":
+                        softwares.add(field.getValue());
+                        break;
+                    case "full_dataset_link":
+                        fulldatasetLinks.add(field.getValue());
+                        break;
+                    case "download_count":
+                        solrEntry.setDownloadCount(field.getValue());
+                        break;
+                    case "sample_synonyms":
+                        solrEntry.setSampleSynonyms(field.getValue());
+                        break;
+                    case "data_synonyms":
+                        solrEntry.setDataSynonyms(field.getValue());
+                        break;
+                    case "name_synonyms":
+                        solrEntry.setNameSynonyms(field.getValue());
+                        break;
+                    case "description_synonyms":
+                        solrEntry.setDescriptionSynonyms(field.getValue());
+                        break;
+                    case "repository":
+                        repositories.add(field.getValue());
+                        break;
+                    case "submitter_email":
+                        submitterEmails.add(field.getValue());
+                        break;
+                    case "submitter":
+                        submitters.add(field.getValue());
+                        break;
+                    case "species":
+                        species.add(field.getValue());
+                        break;
+                    case "secondary_accession":
+                        secondaryAccession.add(field.getValue());
+                        break;
+                    case "pubmed_title":
+                        pubmedTitles.add(field.getValue());
+                        break;
+                    case "pubmed_authors":
+                        pubmedAuthors.add(field.getValue());
+                        break;
+                    case "pubmed_title_synonyms":
+                        solrEntry.setPubmedTitleSynonyms(field.getValue());
+                        break;
+                    case "pubmed_abstract_synonyms":
+                        solrEntry.setPubmedAbstractSynonyms(field.getValue());
+                        break;
+                    //?????
+                    default:
+                        if (null == additionalMap.get("additional_" + field.getName())) {
+                            List<String> listForMap = new ArrayList<>();
+                            listForMap.add(field.getValue());
+                            additionalMap.put("additional_" + field.getName(), listForMap);
+                        } else {
+                            List<String> listField = additionalMap.get("additional_" + field.getName());
+                            listField.add(field.getValue());
+                            additionalMap.put("additional_" + field.getName(), listField);
+                        }
+                        break;
                 }
             });
+
+
+            solrEntry.setDatasetFile(datasetFiles);
+            solrEntry.setSoftware(softwares);
+            solrEntry.setFullDatasetLink(fulldatasetLinks);
+
+
+            solrEntry.setRepository(repositories);
+            solrEntry.setSubmitterEmail(submitterEmails);
+            solrEntry.setSubmitter(submitters);
+            solrEntry.setSpecies(species);
+            solrEntry.setSecondaryAccession(secondaryAccession);
+            solrEntry.setPubmedTitle(pubmedTitles);
+            solrEntry.setPubmedAuthors(pubmedAuthors);
 
             solrEntry.setTissue(tissues);
             solrEntry.setDisease(diseases);

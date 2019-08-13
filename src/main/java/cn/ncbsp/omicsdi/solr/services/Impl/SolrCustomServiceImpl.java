@@ -64,7 +64,6 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
     @Override
     public Suggestions getSuggestResult(String core, SuggestQueryModel suggestQueryModel) {
         SolrQuery solrQuery = SolrQueryBuilder.buildSolrQuery(suggestQueryModel);
-        cn.ncbsp.omicsdi.solr.services.Impl.suggest.QueryRequest queryRequest = new cn.ncbsp.omicsdi.solr.services.Impl.suggest.QueryRequest(solrQuery);
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrClient.query(core, solrQuery);
@@ -112,14 +111,14 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
 
         try {
             queryResponse = solrClient.query(core, solrQuery);
-            solrDocumentList = queryResponse.getResults();
-            namedList = queryResponse.getResponse().asMap(queryResponse.getResponse().size());
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
+        assert queryResponse != null;
+        solrDocumentList = queryResponse.getResults();
+        namedList = queryResponse.getResponse().asMap(queryResponse.getResponse().size());
         SimilarResult similarResult = new SimilarResult();
+        assert namedList != null;
         Map<String, Float> map = namedList.get("interestingTerms");
         Float score = 0.0F;
         for (String key : map.keySet()) {
@@ -135,7 +134,7 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
             entryList.add(entry);
         }
 
-        Entry[] entries = entryList.stream().toArray(Entry[]::new);
+        Entry[] entries = entryList.toArray(new Entry[0]);
 
         similarResult.setEntries(entries);
         return similarResult;
@@ -147,11 +146,10 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrClient.query(core, solrQuery);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
+        assert queryResponse != null;
         NamedList<Object> namedList = queryResponse.getResponse();
         SolrDocumentList solrDocumentList = (SolrDocumentList) namedList.get("response");
         SimilarResult similarResult = new SimilarResult();
@@ -162,7 +160,7 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
             entry.setSource(String.valueOf(x.get("database")));
             Map<String, String[]> map = new ConcurrentHashMap<>();
             for (String s : x.keySet()) {
-                if(x.get(s) != null && x.get(s) instanceof ArrayList) {
+                if (x.get(s) != null && x.get(s) instanceof ArrayList) {
                     ArrayList<String> dataList = (ArrayList<String>) x.get(s);
                     String[] strings = new String[dataList.size()];
                     strings = dataList.toArray(strings);
@@ -185,18 +183,14 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
 
         QueryResponse queryResponse;
         TermsResponse termsResponse = null;
-        Map<String, Map<String, Integer>> namedList = null;
-        SolrDocumentList solrDocumentList = null;
-
         try {
             queryResponse = solrClient.query(core, solrQuery);
             termsResponse = queryResponse.getTermsResponse();
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
 
+        assert termsResponse != null;
         Map<String, List<TermsResponse.Term>> termMap = termsResponse.getTermMap();
         String termFl = termsQueryModel.getTerms_fl().split(",")[0];
 

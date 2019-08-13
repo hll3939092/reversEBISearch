@@ -117,7 +117,7 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         SolrQuery solrQuery = new SolrQuery();
         StringBuffer stringBuffer = new StringBuffer();
         for (String s : taxonId) {
-            if(stringBuffer.length() == 0) {
+            if (stringBuffer.length() == 0) {
                 stringBuffer.append(s);
             } else {
                 stringBuffer.append(" OR " + s);
@@ -125,7 +125,7 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         }
 
 
-        solrQuery.setQuery("tax_id:("+stringBuffer.toString()+ ") AND name_class:\"scientific name\"");
+        solrQuery.setQuery("tax_id:(" + stringBuffer.toString() + ") AND name_class:\"scientific name\"");
         solrQuery.setRows(taxonId.length);
         QueryResponse queryResponse = null;
         try {
@@ -148,7 +148,6 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
 
     @Override
     public QueryResult getQueryResult(String domain, IQModel iqModel) {
-
 
 
         SolrQuery solrQuery = SolrQueryBuilder.buildSolrQuery(iqModel);

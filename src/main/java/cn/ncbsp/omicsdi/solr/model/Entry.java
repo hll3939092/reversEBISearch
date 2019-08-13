@@ -81,11 +81,6 @@ public class Entry
         return name;
     }
 
-    public void setName(String name) {
-        this.name = new Name();
-        this.name.setValue(name);
-    }
-
     /**
      * Sets the value of the name property.
      *
@@ -94,6 +89,11 @@ public class Entry
      */
     public void setName(Entry.Name value) {
         this.name = value;
+    }
+
+    public void setName(String name) {
+        this.name = new Name();
+        this.name.setValue(name);
     }
 
     /**
@@ -186,12 +186,6 @@ public class Entry
         return crossReferences;
     }
 
-    public void setCrossReferences(List<Reference> references) {
-        if (references != null && !references.isEmpty()) {
-            crossReferences.setRef(references);
-        }
-    }
-
     /**
      * Sets the value of the crossReferences property.
      *
@@ -200,6 +194,12 @@ public class Entry
      */
     public void setCrossReferences(CrossReferences value) {
         this.crossReferences = value;
+    }
+
+    public void setCrossReferences(List<Reference> references) {
+        if (references != null && !references.isEmpty()) {
+            crossReferences.setRef(references);
+        }
     }
 
     /**

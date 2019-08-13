@@ -71,7 +71,6 @@ public class SolrFacetServiceImpl implements ISolrFacetService {
         facetList.setHitCount(String.valueOf(foundNum));
 
 
-
         Facet[] facets = facetFieldList.stream().map(x -> {
             Facet facet = new Facet();
             facet.setId(x.getName());
@@ -85,8 +84,8 @@ public class SolrFacetServiceImpl implements ISolrFacetService {
                 return facetValue;
             }).toArray(FacetValue[]::new);
 
-            if(facetQueryModel.getFacet_field().equalsIgnoreCase("TAXONOMY")) {
-                List<NCBITaxonomy> ncbiTaxonomyList = solrEntryService.getNCBITaxonomyData(Arrays.stream(facetValues).map(FacetValue::getLabel).toArray(String[] :: new));
+            if (facetQueryModel.getFacet_field().equalsIgnoreCase("TAXONOMY")) {
+                List<NCBITaxonomy> ncbiTaxonomyList = solrEntryService.getNCBITaxonomyData(Arrays.stream(facetValues).map(FacetValue::getLabel).toArray(String[]::new));
                 Map<String, String> map = new ConcurrentHashMap<>();
                 ncbiTaxonomyList.forEach(z -> map.put(z.getTaxId(), z.getNameTxt()));
                 for (int i = 0; i < facetValues.length; i++) {

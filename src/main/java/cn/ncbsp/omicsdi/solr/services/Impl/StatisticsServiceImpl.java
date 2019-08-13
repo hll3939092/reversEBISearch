@@ -3,7 +3,6 @@ package cn.ncbsp.omicsdi.solr.services.Impl;
 import cn.ncbsp.omicsdi.solr.model.Domain;
 import cn.ncbsp.omicsdi.solr.model.DomainList;
 import cn.ncbsp.omicsdi.solr.model.IndexInfo;
-import cn.ncbsp.omicsdi.solr.queryModel.IQModel;
 import cn.ncbsp.omicsdi.solr.repo.SolrEntryRepo;
 import cn.ncbsp.omicsdi.solr.services.IStatisticsService;
 import org.apache.solr.client.solrj.SolrClient;

@@ -63,17 +63,17 @@ public class DatasetController {
         this.statisticsService = statisticsService;
     }
 
-    //todo pubmed
-    @ApiOperation(value = "pubmed API")
-    @RequestMapping(value = "/pubmed/entry/{finalIds}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    QueryResult getPubmedApi(
-            @PathVariable(value = "finalIds") String finalIds,
-            @RequestParam(value = "fields") String fields,
-            @RequestParam(value = "format") String format
-    ) {
-        return null;
-    }
+//    //todo pubmed
+//    @ApiOperation(value = "pubmed API")
+//    @RequestMapping(value = "/pubmed/entry/{finalIds}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public @ResponseBody
+//    QueryResult getPubmedApi(
+//            @PathVariable(value = "finalIds") String finalIds,
+//            @RequestParam(value = "fields") String fields,
+//            @RequestParam(value = "format") String format
+//    ) {
+//        return null;
+//    }
 
 
     // EBI Search RESTful Web Services R.
@@ -92,11 +92,7 @@ public class DatasetController {
     ) {
         TermsQueryModel termsQueryModel = new TermsQueryModel();
         termsQueryModel.setTerms_fl(fieldid);
-        //useLess
-//        termsQueryModel.setTerms_list(termlist);
-        TermResult termResult = solrCustomService.getFrequentlyTerms(domain, termsQueryModel);
-
-        return termResult;
+        return solrCustomService.getFrequentlyTerms(domain, termsQueryModel);
     }
 //    https://www.ebi.ac.uk/ebisearch/ws/rest/omics?query=*:*%20NOT%20(isprivate:true)&fields=description,name,submitter_keywords,curator_keywords,publication_date,TAXONOMY,omics_type,ENSEMBL,UNIPROT,CHEBI,citation_count,view_count,reanalysis_count,search_count,view_count_scaled,reanalysis_count_scaled,citation_count_scaled,normalized_connections,download_count,download_count_scaled&start=0&size=20&facetcount=20&format=JSON
 
@@ -122,6 +118,7 @@ public class DatasetController {
             e.printStackTrace();
         }
         try {
+            assert in != null;
             properties.load(in);
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,12 +217,12 @@ public class DatasetController {
                 x = x + " " + order;
                 return x;
             }).toArray(String[]::new);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (String sort : sorts) {
                 if (sb.length() == 0) {
                     sb.append(sort);
                 } else {
-                    sb.append("," + sort);
+                    sb.append(",").append(sort);
                 }
             }
             facetQueryModel.setSort(sb.toString());
@@ -233,8 +230,7 @@ public class DatasetController {
 
         facetQueryModel.setWt(format);
 
-        QueryResult queryResult = solrEntryService.getQueryResult(domain, facetQueryModel);
-        return queryResult;
+        return solrEntryService.getQueryResult(domain, facetQueryModel);
     }
 
     @ApiOperation(value = "FacetWSClient getFacet")
@@ -256,8 +252,7 @@ public class DatasetController {
         }
         facetQueryModel.setQ("database:" + query);
         facetQueryModel.setFacet_field(facetfields);
-        FacetList facetList = solrFacetService.getFacetEntriesByDomains(domain, facetQueryModel);
-        return facetList;
+        return solrFacetService.getFacetEntriesByDomains(domain, facetQueryModel);
     }
 
     // 对应DatasetWsClient getDatasetsById
@@ -284,7 +279,7 @@ public class DatasetController {
             @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
     ) {
         QueryResult newQueryResult = null;
-        if (domain.equals("taxonomy")) {
+        if ("taxonomy".equals(domain)) {
             FacetQueryModel facetQueryModel = new FacetQueryModel();
             facetQueryModel.setQ("tax_id:" + "(" + entryids.replaceAll(",", " OR ") + ")" + " AND name_class:\"scientific name\"");
             facetQueryModel.setWt(format);
@@ -314,18 +309,9 @@ public class DatasetController {
         String regex = "[a-zA-Z0-9]+";
         Boolean match = Pattern.matches(regex, term);
         SuggestQueryModel suggestQueryModel = new SuggestQueryModel();
-//        suggestQueryModel.setSuggest_dictionary("mySuggester,omicsSuggester");
-//        suggestQueryModel.setQ("*:*");
         suggestQueryModel.setSuggest_q(term);
-//        suggestQueryModel.setWt("JSON");
-
-//        solrCustomService.getSuggestion(domain, term);
-
         if (match) {
-
-            Suggestions suggestions = solrCustomService.getSuggestResult(domain, suggestQueryModel);
-//            Suggestions suggestions = autocompleteService.getSuggestions(domain,term, Suggestion.class);
-            return suggestions;
+            return solrCustomService.getSuggestResult(domain, suggestQueryModel);
         } else {
             // todo Exception
             return null;
@@ -357,8 +343,6 @@ public class DatasetController {
     ) {
         MLTQueryModel mltQueryModel = new MLTQueryModel();
         mltQueryModel.setQ("id:" + entryid + " AND " + "database:" + domain);
-//        mltQueryModel.setFl(mltfields + ",score");
-        SimilarResult similarResult = solrCustomService.getSimilarResult("omics", mltQueryModel);
-        return similarResult;
+        return solrCustomService.getSimilarResult("omics", mltQueryModel);
     }
 }

@@ -159,13 +159,6 @@ public class Database
         return entries;
     }
 
-    public void setEntries(List<Entry> entries) {
-        if (this.entries == null)
-            this.entries = new Entries(entries);
-        else
-            this.entries.entry = entries;
-    }
-
     /**
      * Sets the value of the entries property.
      *
@@ -174,6 +167,13 @@ public class Database
      */
     public void setEntries(Entries value) {
         this.entries = value;
+    }
+
+    public void setEntries(List<Entry> entries) {
+        if (this.entries == null)
+            this.entries = new Entries(entries);
+        else
+            this.entries.entry = entries;
     }
 
 

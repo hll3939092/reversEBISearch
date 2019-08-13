@@ -75,9 +75,7 @@ public class MongoDataRepoImpl implements IMongoDataRepo {
     public Map<String, Integer> getAllDatabase() {
 
         List<DatabaseDetail> databaseDetailList = mongoTemplate.findAll(DatabaseDetail.class);
-        List<String> databases = databaseDetailList.stream().map(x -> {
-            return x.getRepository();
-        }).collect(Collectors.toList());
+        List<String> databases = databaseDetailList.stream().map(DatabaseDetail::getRepository).collect(Collectors.toList());
 
         Map<String, Integer> map = new ConcurrentHashMap<>();
         for (String database : databases) {

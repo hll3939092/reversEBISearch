@@ -25,7 +25,6 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.*;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.common.util.SimpleOrderedMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +68,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
     ISolrEntryService iSolrEntryService;
 
 
-//    @Test
+    //    @Test
 //    public void test3() {
 //        Money money = new Money();
 //        money.setId("Pony Coin");
@@ -1227,7 +1226,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
         coreAdminRequest.setAction(CoreAdminParams.CoreAdminAction.STATUS);
         try {
             CoreAdminResponse coreAdminResponse = coreAdminRequest.process(solrClient);
-            NamedList<NamedList<Object>>  coreStatus = coreAdminResponse.getCoreStatus();
+            NamedList<NamedList<Object>> coreStatus = coreAdminResponse.getCoreStatus();
             DomainList domainList = new DomainList();
             List<Domain> domains = new ArrayList<>();
 
@@ -1294,4 +1293,6 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
         }
         System.out.println("xxxxd");
     }
+
+
 }

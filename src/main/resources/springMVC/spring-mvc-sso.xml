@@ -52,11 +52,11 @@
     </bean>
 
 
-    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
+    <!--<bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>-->
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <property name="parser" ref="XMLResponseParser"></property>
+        <!--<property name="parser" ref="XMLResponseParser"></property>-->
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
@@ -72,17 +72,6 @@
     </bean>
 
     <!--<jpa:repositories base-package="cn.ncbsp.omicsdi.solr.repo" />-->
-
-    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
-
-    <bean id="solrSuggestClient" class="cn.ncbsp.omicsdi.solr.services.Impl.suggest.HttpSolrClient">
-        <constructor-arg name="builder" ref="solrSuggestClientBuilder"></constructor-arg>
-        <property name="parser" ref="XMLResponseParser"></property>
-    </bean>
-
-    <bean id="solrSuggestClientBuilder" class="cn.ncbsp.omicsdi.solr.services.Impl.suggest.HttpSolrClient.Builder">
-        <constructor-arg name="baseSolrUrl" value="http://192.168.99.25:33669/solr/"></constructor-arg>
-    </bean>
 
     <!-- solr服务器地址 -->
     <!--<solr:solr-server id="solrServer" url="http://127.0.0.1:8080/solr" />-->
