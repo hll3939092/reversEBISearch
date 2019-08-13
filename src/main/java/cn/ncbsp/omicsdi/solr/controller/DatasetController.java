@@ -315,9 +315,9 @@ public class DatasetController {
         Boolean match = Pattern.matches(regex, term);
         SuggestQueryModel suggestQueryModel = new SuggestQueryModel();
 //        suggestQueryModel.setSuggest_dictionary("mySuggester,omicsSuggester");
-        suggestQueryModel.setQ("*:*");
+//        suggestQueryModel.setQ("*:*");
         suggestQueryModel.setSuggest_q(term);
-        suggestQueryModel.setWt("JSON");
+//        suggestQueryModel.setWt("JSON");
 
 //        solrCustomService.getSuggestion(domain, term);
 

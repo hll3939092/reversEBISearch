@@ -15,19 +15,13 @@ import cn.ncbsp.omicsdi.solr.solrmodel.TermResult;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.request.QueryRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.SuggesterResponse;
 import org.apache.solr.client.solrj.response.TermsResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.MoreLikeThisParams;
 import org.apache.solr.common.util.NamedList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.solr.core.query.Query;
-import org.springframework.data.solr.core.query.SimpleQuery;
-import org.springframework.data.solr.core.query.result.SolrResultPage;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -70,6 +64,7 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
     @Override
     public Suggestions getSuggestResult(String core, SuggestQueryModel suggestQueryModel) {
         SolrQuery solrQuery = SolrQueryBuilder.buildSolrQuery(suggestQueryModel);
+        cn.ncbsp.omicsdi.solr.services.Impl.suggest.QueryRequest queryRequest = new cn.ncbsp.omicsdi.solr.services.Impl.suggest.QueryRequest(solrQuery);
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrClient.query(core, solrQuery);

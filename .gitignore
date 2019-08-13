@@ -2,3 +2,5 @@
 \.idea/
 
 solr-API\.iml
+
+target/
