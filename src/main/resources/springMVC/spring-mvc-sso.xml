@@ -91,7 +91,7 @@
     <!--<constructor-arg ref="solrServer" />-->
     <!--</bean>-->
 
-    <mongo:mongo-client id="mongoClient" host="193.62.55.69" port="30304" credentials="ddi_user:V5f3SThe@admin">
+    <mongo:mongo-client id="mongoClient" host="1" port="1" credentials="1">
         <mongo:client-options connections-per-host="5"
                               threads-allowed-to-block-for-connection-multiplier="10"
                               connect-timeout="100000"
