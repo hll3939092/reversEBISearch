@@ -36,6 +36,8 @@ public class DatasetController {
 
     private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
 
+    private final static String DEFAULT_SOLR_CORE = "omics";
+
     private final
     ISolrCustomService solrCustomService;
 
@@ -63,23 +65,8 @@ public class DatasetController {
         this.statisticsService = statisticsService;
     }
 
-//    //todo pubmed
-//    @ApiOperation(value = "pubmed API")
-//    @RequestMapping(value = "/pubmed/entry/{finalIds}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public @ResponseBody
-//    QueryResult getPubmedApi(
-//            @PathVariable(value = "finalIds") String finalIds,
-//            @RequestParam(value = "fields") String fields,
-//            @RequestParam(value = "format") String format
-//    ) {
-//        return null;
-//    }
-
-
-    // EBI Search RESTful Web Services R.
-    // Top terms
-
     // @return TermResult
+    //todo exclude in API
     // 可以使用 对应DatasetWSClient getFrequentlyTerms 方法
     @ApiOperation(value = "DatasetWSClient getFrequentlyTerms")
     @RequestMapping(value = "/{domain}/topterms/{fieldid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,7 +74,7 @@ public class DatasetController {
     TermResult getFrequentlyTerms(
             @PathVariable(value = "domain") String domain,
             @PathVariable(value = "fieldid") String fieldid,
-            @RequestParam(value = "termlist", required = false, defaultValue = "") String termlist
+            @RequestParam(value = "termlist", required = false) String termlist
 
     ) {
         TermsQueryModel termsQueryModel = new TermsQueryModel();
@@ -96,64 +83,81 @@ public class DatasetController {
     }
 //    https://www.ebi.ac.uk/ebisearch/ws/rest/omics?query=*:*%20NOT%20(isprivate:true)&fields=description,name,submitter_keywords,curator_keywords,publication_date,TAXONOMY,omics_type,ENSEMBL,UNIPROT,CHEBI,citation_count,view_count,reanalysis_count,search_count,view_count_scaled,reanalysis_count_scaled,citation_count_scaled,normalized_connections,download_count,download_count_scaled&start=0&size=20&facetcount=20&format=JSON
 
-    @ApiOperation(value = "DatasetWSClient getDatasets")
-    @RequestMapping(value = "/omics1", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    DomainList getDomainsOfOmics(
-            @RequestParam(value = "query", required = false, defaultValue = "") String query,
-            @RequestParam(value = "fields", required = false, defaultValue = "") String fields,
-            @RequestParam(value = "start", required = false, defaultValue = "0") int start,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
-            @RequestParam(value = "facetcount", required = false, defaultValue = "20") int facetcount,
-            @RequestParam(value = "sortfield", required = false, defaultValue = "") String sortfield,
-            @RequestParam(value = "order", required = false, defaultValue = "asc") String order,
-            @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
-    ) {
-        DomainList domainList = new DomainList();
-        Properties properties = new Properties();
-        InputStream in = null;
-        try {
-            in = new BufferedInputStream(new FileInputStream("properties/domainList.properties"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            assert in != null;
-            properties.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String propertiesId = (String) properties.get("id");
-        String propertiesName = (String) properties.get("name");
-        String propertiesDescription = (String) properties.get("description");
-        String[] ids = propertiesId.split(";");
-        String[] names = propertiesName.split(";");
-        String[] descriptions = propertiesDescription.split(";");
-        Domain[] domains = new Domain[ids.length];
-        for (int i = 0; i < domains.length; i++) {
-            Domain domainL = new Domain();
-            domainL.setId(ids[i]);
-            domainL.setName(names[i]);
-            domainL.setDescription(descriptions[i]);
-            domains[i] = domainL;
-        }
-        domainList.setList(domains);
-        return domainList;
-    }
+//    @ApiOperation(value = "DatasetWSClient getDatasets")
+//    @RequestMapping(value = "/omics1", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public @ResponseBody
+//    DomainList getDomainsOfOmics(
+//            @RequestParam(value = "query", required = false, defaultValue = "") String query,
+//            @RequestParam(value = "fields", required = false, defaultValue = "") String fields,
+//            @RequestParam(value = "start", required = false, defaultValue = "0") int start,
+//            @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+//            @RequestParam(value = "facetcount", required = false, defaultValue = "20") int facetcount,
+//            @RequestParam(value = "sortfield", required = false, defaultValue = "") String sortfield,
+//            @RequestParam(value = "order", required = false, defaultValue = "asc") String order,
+//            @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
+//    ) {
+//        DomainList domainList = new DomainList();
+//        Properties properties = new Properties();
+//        InputStream in = null;
+//        try {
+//            in = new BufferedInputStream(new FileInputStream("properties/domainList.properties"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            assert in != null;
+//            properties.load(in);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        String propertiesId = (String) properties.get("id");
+//        String propertiesName = (String) properties.get("name");
+//        String propertiesDescription = (String) properties.get("description");
+//        String[] ids = propertiesId.split(";");
+//        String[] names = propertiesName.split(";");
+//        String[] descriptions = propertiesDescription.split(";");
+//        Domain[] domains = new Domain[ids.length];
+//        for (int i = 0; i < domains.length; i++) {
+//            Domain domainL = new Domain();
+//            domainL.setId(ids[i]);
+//            domainL.setName(names[i]);
+//            domainL.setDescription(descriptions[i]);
+//            domains[i] = domainL;
+//        }
+//        domainList.setList(domains);
+//        return domainList;
+//    }
 
+
+    //https://www.ebi.ac.uk/ebisearch/ws/rest/omics?format=JSON
     @ApiOperation(value = "DatasetWSClient getDatasets")
-    @RequestMapping(value = "/statistics/omics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/status/omics", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     DomainList getDomainsStatistics() {
         return statisticsService.getQueryResult();
+    }
+
+    private String addDefaultFields(String fields) {
+        StringBuilder sb = new StringBuilder();
+        if(StringUtils.isNotBlank(fields)) {
+            sb.append(fields);
+            if(!fields.toLowerCase().contains("id")) {
+                sb.append(",id");
+            }
+            if(!fields.toLowerCase().contains("database")) {
+                sb.append(",database");
+            }
+        }else {
+            sb.append("id,database");
+        }
+
+        return sb.toString();
     }
 
     /**
      * @param domain
      * @param query
      * @param fields
-     * @param start
-     * @param size
      * @param facetcount
      * @param sortfield
      * @param order
@@ -162,7 +166,37 @@ public class DatasetController {
      * <p>
      * https://www.ebi.ac.uk/ebisearch/ws/rest/omics?query=domain_source:(arrayexpress-repository%20OR%20atlas-experiments%20OR%20biomodels%20OR%20dbgap%20OR%20ega%20OR%20eva%20OR%20geo%20OR%20gnps%20OR%20gpmdb%20OR%20jpost%20OR%20lincs%20OR%20massive%20OR%20metabolights_dataset%20OR%20metabolome_express%20OR%20metabolomics_workbench%20OR%20omics_ena_project%20OR%20paxdb)&facetfields=TAXONOMY&facetcount=100&size=0&format=JSON
      */
+    //statistics
+    @ApiOperation(value = "DatasetWSClient getDatasets")
+    @RequestMapping(value = "/statistics/{domain}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    FacetList getStaticsData(
+            @PathVariable(value = "domain") String domain,
+            @RequestParam(value = "query", required = false, defaultValue = "") String query,
+            @RequestParam(value = "fields", required = false, defaultValue = "") String fields,
+            @RequestParam(value = "facetfields", required = false, defaultValue = "") String facetfields,
+            @RequestParam(value = "facetcount", required = false, defaultValue = "20") int facetcount,
+            @RequestParam(value = "sortfield", required = false, defaultValue = "") String sortfield,
+            @RequestParam(value = "order", required = false, defaultValue = "asc") String order,
+            @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
 
+    ) {
+        if(facetfields.indexOf(",") > 0) {
+            //todo error
+        }
+        FacetQueryModel facetQueryModel = new FacetQueryModel();
+        if (StringUtils.isBlank(query)) {
+            query = "*:*";
+        } else if (!query.contains(":")) {
+            query = Constans.DEFAULT_SEARCH_FIELD + ":" + query;
+        }
+        facetQueryModel.setQ(query);
+        facetQueryModel.setFl(addDefaultFields(fields));
+        facetQueryModel.setFacet_field(facetfields);
+        facetQueryModel.setFacet_limit(String.valueOf(facetcount));
+        return solrFacetService.getFacetEntriesByDomains(DEFAULT_SOLR_CORE, facetQueryModel);
+
+    }
 
     // 对应DatasetWsClient getDatasets
     // sortfield+order 形成排序
@@ -176,26 +210,17 @@ public class DatasetController {
             @RequestParam(value = "start", required = false, defaultValue = "0") int start,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
             @RequestParam(value = "facetcount", required = false, defaultValue = "20") int facetcount,
-            @RequestParam(value = "sortfield", required = false, defaultValue = "") String sortfield,
-            @RequestParam(value = "order", required = false, defaultValue = "asc") String order,
+            @RequestParam(value = "facetFields", required = false) String facetFields,
+            @RequestParam(value = "sortedField", required = false) String sortedField,
+            @RequestParam(value = "order", required = false, defaultValue = "ascending") String order,
             @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
 
     ) {
-        if ("TAXONOMY".equalsIgnoreCase(fields) || "tissue".equalsIgnoreCase(fields)) {
-            FacetQueryModel facetQueryModel = new FacetQueryModel();
-            if (StringUtils.isBlank(query)) {
-                query = "*:*";
-            } else if (!query.contains(":")) {
-                query = Constans.DEFAULT_SEARCH_FIELD + ":" + query;
-            }
-            facetQueryModel.setQ(query);
 
-
-            facetQueryModel.setFacet_field(fields);
-            return solrFacetService.getFacetEntriesByDomains("omics", facetQueryModel);
-        }
 
         FacetQueryModel facetQueryModel = new FacetQueryModel();
+        query = query.replace("NOT (isprivate:true)", "");
+
         if (StringUtils.isBlank(query)) {
             query = "*:*";
         } else if (!query.contains(":")) {
@@ -204,16 +229,22 @@ public class DatasetController {
         facetQueryModel.setQ(query);
 
         if (StringUtils.isNotBlank(fields)) {
-            facetQueryModel.setFacet_field(fields);
+            facetQueryModel.setFl(fields);
         }
 
         facetQueryModel.setStart(String.valueOf(start));
         facetQueryModel.setRows(String.valueOf(size));
 
-
+        if(StringUtils.isNotBlank(facetFields)) {
+            facetQueryModel.setFacet_field(facetFields);
+        }
         facetQueryModel.setFacet_limit(String.valueOf(facetcount));
-        if (StringUtils.isNotBlank(sortfield)) {
-            String[] sorts = Arrays.stream(sortfield.split(",")).map(x -> {
+
+
+
+        if (StringUtils.isNotBlank(sortedField) && StringUtils.isNotBlank(order)) {
+
+            String[] sorts = Arrays.stream(sortedField.split(",")).map(x -> {
                 x = x + " " + order;
                 return x;
             }).toArray(String[]::new);
@@ -245,13 +276,16 @@ public class DatasetController {
             @RequestParam(value = "format", required = false, defaultValue = "") String format
 
     ) {
-//        Map<String, String[]> paramMap = new HashMap<>();
         FacetQueryModel facetQueryModel = new FacetQueryModel();
         if (StringUtils.isBlank(query)) {
-            return null;
+            query = "*:*";
+        } else if (!query.contains(":")) {
+            query = Constans.DEFAULT_SEARCH_FIELD + ":" + query;
         }
-        facetQueryModel.setQ("database:" + query);
+        facetQueryModel.setQ(query);
         facetQueryModel.setFacet_field(facetfields);
+        facetQueryModel.setFacet_limit(facetcount);
+        facetQueryModel.setRows(size);
         return solrFacetService.getFacetEntriesByDomains(domain, facetQueryModel);
     }
 
@@ -287,11 +321,10 @@ public class DatasetController {
         } else {
             FacetQueryModel facetQueryModel = new FacetQueryModel();
             facetQueryModel.setQ("database:" + domain + " AND id:" + "(" + entryids.replaceAll(",", " OR ") + ")");
-            facetQueryModel.setFacet_field(fields);
+            facetQueryModel.setFl(addDefaultFields(fields));
             facetQueryModel.setWt(format);
             newQueryResult = solrEntryService.getQueryResult(domain, facetQueryModel);
         }
-
         return newQueryResult;
     }
 
@@ -313,11 +346,8 @@ public class DatasetController {
         if (match) {
             return solrCustomService.getSuggestResult(domain, suggestQueryModel);
         } else {
-            // todo Exception
-            return null;
+            return new Suggestions();
         }
-
-
     }
 
     /**
@@ -343,7 +373,9 @@ public class DatasetController {
     ) {
         MLTQueryModel mltQueryModel = new MLTQueryModel();
         mltQueryModel.setQ("id:" + entryid + " AND " + "database:" + domain);
-        mltQueryModel.setMlt_fl(mltfields+",score");
-        return solrCustomService.getSimilarResult("omics", mltQueryModel);
+        if(StringUtils.isNotBlank(mltfields)) {
+            mltQueryModel.setMlt_fl(mltfields+",score");
+        }
+        return solrCustomService.getSimilarResult(DEFAULT_SOLR_CORE, mltQueryModel);
     }
 }

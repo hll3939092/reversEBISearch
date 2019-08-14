@@ -29,18 +29,18 @@ import java.util.List;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "datesType", propOrder = {
-        "date"
+@XmlType(name = "filesType", propOrder = {
+        "file"
 })
-public class DatesType
+public class FilesType
         implements Serializable, IDataObject {
 
     private final static long serialVersionUID = 105L;
     @XmlElement(required = true)
-    protected List<Date> date;
+    protected List<File> file;
 
-    public void setDate(List<Date> date) {
-        this.date = date;
+    public void setFile(List<File> date) {
+        this.file = date;
     }
 
     /**
@@ -63,48 +63,17 @@ public class DatesType
      * Objects of the following type(s) are allowed in the list
      * {@link Date }
      */
-    public List<Date> getDate() {
-        if (date == null) {
-            date = new ArrayList<>();
+    public List<File> getFile() {
+        if (file == null) {
+            file = new ArrayList<>();
         }
-        return this.date;
+        return this.file;
     }
 
     public boolean isEmpty() {
-        date = getDate();
-        return date.isEmpty();
+        file = getFile();
+        return file.isEmpty();
     }
 
-    public boolean containsPublicationDate() {
-        if (date != null && !date.isEmpty()) {
-            for (Date dateField : date) {
-                if (dateField.getType().equalsIgnoreCase(Field.PUBLICATION.getName()))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    public void addDefaultPublicationDate() {
-        String toAdd = null;
-        if (date != null && !date.isEmpty()) {
-            for (Date dateField : date) {
-                if (dateField.getType().equalsIgnoreCase(Field.PUBLICATION_UPDATED.getName()))
-                    toAdd = dateField.getValue();
-            }
-        }
-        if (toAdd != null)
-            date.add(new Date(Field.PUBLICATION.getName(), toAdd));
-    }
-
-    public Date getDateByKey(String key) {
-        if (date != null && !date.isEmpty()) {
-            for (Date dateField : date) {
-                if (dateField.getType().equalsIgnoreCase(key))
-                    return dateField;
-            }
-        }
-        return null;
-    }
 
 }

@@ -192,6 +192,7 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
 
         assert termsResponse != null;
         Map<String, List<TermsResponse.Term>> termMap = termsResponse.getTermMap();
+        //1st term field
         String termFl = termsQueryModel.getTerms_fl().split(",")[0];
 
         Term[] terms = termMap.get(termFl).stream().map(x -> {

@@ -15,6 +15,7 @@ import cn.ncbsp.omicsdi.solr.util.XmlHelper;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,16 +31,23 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SolrEntryServiceImpl implements ISolrEntryService {
-    @Autowired
+    private final
     SolrEntryRepo solrEntryRepo;
 
-    @Autowired
+    private final
     SolrClient solrClient;
+
+    @Autowired
+    public SolrEntryServiceImpl(SolrEntryRepo solrEntryRepo, SolrClient solrClient) {
+        this.solrEntryRepo = solrEntryRepo;
+        this.solrClient = solrClient;
+    }
 
     @Override
     public void saveSolrEntry(String xml, String core) {
         Database database = new Database();
         database = XmlHelper.xmlToObject(xml, database);
+        assert database != null;
         Entries entries = database.getEntries();
         List<Entry> list = entries.getEntry();
         List<SolrEntry> listSolrEntry = SolrEntryUtil.parseEntryToSolrEntry(list, database.getName().toLowerCase());
@@ -74,7 +82,8 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
     public void saveSolrEntry(String xml) {
         Database database = new Database();
         database = XmlHelper.xmlToObject(xml, database);
-//        String core = NameToCoreUtil.getCore(database.getName());
+
+        assert database != null;
         String core = Constans.Database.retriveSorlName(database.getName());
         Entries entries = database.getEntries();
         List<Entry> list = entries.getEntry();
@@ -88,6 +97,7 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         File folder = new File(folderPath);
         if (folder.exists()) {
             File[] files = folder.listFiles();
+            assert files != null;
             if (files.length > 0) {
                 for (File file : files) {
                     if (Pattern.matches(".*.xml", file.getName()) || Pattern.matches(".*.XML", file.getName())) {
@@ -115,12 +125,12 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
     @Override
     public List<NCBITaxonomy> getNCBITaxonomyData(String... taxonId) {
         SolrQuery solrQuery = new SolrQuery();
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (String s : taxonId) {
             if (stringBuffer.length() == 0) {
                 stringBuffer.append(s);
             } else {
-                stringBuffer.append(" OR " + s);
+                stringBuffer.append(" OR ").append(s);
             }
         }
 
@@ -130,12 +140,11 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         QueryResponse queryResponse = null;
         try {
             queryResponse = solrClient.query("taxonomy", solrQuery);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SolrServerException | IOException e) {
             e.printStackTrace();
         }
-        List<NCBITaxonomy> taxonomyList = queryResponse.getResults().stream().map(x -> {
+        assert queryResponse != null;
+        return queryResponse.getResults().stream().map(x -> {
             NCBITaxonomy ncbiTaxonomy = new NCBITaxonomy();
             ncbiTaxonomy.setTaxId(String.valueOf(x.get("tax_id")));
             ncbiTaxonomy.setNameTxt(String.valueOf(x.get("name_txt")));
@@ -143,7 +152,6 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
             ncbiTaxonomy.setNameClass(String.valueOf(x.get("name_class")));
             return ncbiTaxonomy;
         }).collect(Collectors.toList());
-        return taxonomyList;
     }
 
     @Override
@@ -160,6 +168,7 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         }
 
         QueryResult queryResult = new QueryResult();
+        assert queryResponse != null;
         queryResult.setCount(queryResponse.getResults().size());
 
         cn.ncbsp.omicsdi.solr.solrmodel.Entry[] entries = queryResponse.getResults().stream().map(x -> {
@@ -177,6 +186,9 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
                 } else if (x.get(key) instanceof Long) {
                     String str = String.valueOf(x.get(key));
                     map.put(key, new String[]{str});
+                } else if (x.get(key) instanceof  Float) {
+                    String str = String.valueOf(x.get(key));
+                    map.put(key, new String[]{str});
                 } else {
                     ArrayList<String> list = (ArrayList<String>) x.get(key);
                     String[] str = new String[list.size()];
@@ -190,23 +202,25 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
         queryResult.setEntries(entries);
 
         queryResult.setDomains(null);
-        Facet[] facets = queryResponse.getFacetFields().stream().map(x -> {
-            Facet facet = new Facet();
-            facet.setId(x.getName());
-            facet.setLabel(x.getName());
-            Long total = x.getValues().stream().mapToLong(y -> y.getCount()).sum();
-            facet.setTotal(Math.toIntExact(total));
-            FacetValue[] facetValues = x.getValues().stream().map(z -> {
-                FacetValue facetValue = new FacetValue();
-                facetValue.setValue(z.getName());
-                facetValue.setLabel(z.getName());
-                facetValue.setCount(String.valueOf(z.getCount()));
-                return facetValue;
-            }).toArray(FacetValue[]::new);
-            facet.setFacetValues(facetValues);
-            return facet;
-        }).toArray(Facet[]::new);
-        queryResult.setFacets(facets);
+        if(queryResponse.getFacetFields() != null) {
+            Facet[] facets = queryResponse.getFacetFields().stream().map(x -> {
+                Facet facet = new Facet();
+                facet.setId(x.getName());
+                facet.setLabel(x.getName());
+                Long total = x.getValues().stream().mapToLong(FacetField.Count::getCount).sum();
+                facet.setTotal(Math.toIntExact(total));
+                FacetValue[] facetValues = x.getValues().stream().map(z -> {
+                    FacetValue facetValue = new FacetValue();
+                    facetValue.setValue(z.getName());
+                    facetValue.setLabel(z.getName());
+                    facetValue.setCount(String.valueOf(z.getCount()));
+                    return facetValue;
+                }).toArray(FacetValue[]::new);
+                facet.setFacetValues(facetValues);
+                return facet;
+            }).toArray(Facet[]::new);
+            queryResult.setFacets(facets);
+        }
         return queryResult;
     }
 }

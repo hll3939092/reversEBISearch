@@ -62,6 +62,10 @@ public class Entry
     protected String keywords;
     @XmlElement(required = true)
     protected DatesType dates;
+
+
+    protected FilesType files;
+
     @XmlElement(name = "cross_references")
     protected CrossReferences crossReferences;
     @XmlElement(name = "additional_fields", required = true)
@@ -260,6 +264,14 @@ public class Entry
      */
     public void setAcc(String value) {
         this.acc = value;
+    }
+
+    public FilesType getFiles() {
+        return files;
+    }
+
+    public void setFiles(FilesType files) {
+        this.files = files;
     }
 
     @Override

@@ -41,6 +41,10 @@ public class Dataset implements Serializable, IDataset {
     //Cross References
     private Map<String, Set<String>> crossReferences;
 
+    private Map<String, Set<String>> files = new HashMap<>();
+
+    private Map<String, String> configurations = new HashMap<>();
+
     private String filePath;
 
     private String currentStatus;
@@ -205,6 +209,21 @@ public class Dataset implements Serializable, IDataset {
         crossReferences.put(key, values);
     }
 
+    public Map<String, Set<String>> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Map<String, Set<String>> files) {
+        this.files = files;
+    }
+
+    public Map<String, String> getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(Map<String, String> configurations) {
+        this.configurations = configurations;
+    }
 
     @Override
     public int hashCode() {
