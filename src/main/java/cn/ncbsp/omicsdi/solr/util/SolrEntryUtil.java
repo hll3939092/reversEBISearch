@@ -189,7 +189,8 @@ public class SolrEntryUtil {
                         secondaryAccession.add(field.getValue());
                         break;
                     case "pubmed_title":
-                        pubmedTitles.add(field.getValue());
+                        solrEntry.setPubmedTitle(field.getValue());
+//                        pubmedTitles.add(field.getValue());
                         break;
                     case "pubmed_authors":
                         pubmedAuthors.add(field.getValue());
@@ -226,7 +227,7 @@ public class SolrEntryUtil {
             solrEntry.setSubmitter(submitters);
             solrEntry.setSpecies(species);
             solrEntry.setSecondaryAccession(secondaryAccession);
-            solrEntry.setPubmedTitle(pubmedTitles);
+//            solrEntry.setPubmedTitle(pubmedTitles);
             solrEntry.setPubmedAuthors(pubmedAuthors);
 
             solrEntry.setTissue(tissues);

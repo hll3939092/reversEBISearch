@@ -1180,8 +1180,9 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testSolrService() {
-        iSolrEntryService.saveSolrEntries("C:\\Users\\MS\\Desktop\\solr\\solrTest", "C:\\Users\\MS\\Desktop\\solr\\solrTemp");
+        iSolrEntryService.saveSolrEntries("C:\\omicsDI\\solrAPI\\output","C:\\omicsDI\\solrAPI\\backup");
     }
+
 
     @Test
     public void testsolrssss() {
