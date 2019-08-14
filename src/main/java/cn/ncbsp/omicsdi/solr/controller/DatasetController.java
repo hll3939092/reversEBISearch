@@ -343,6 +343,7 @@ public class DatasetController {
     ) {
         MLTQueryModel mltQueryModel = new MLTQueryModel();
         mltQueryModel.setQ("id:" + entryid + " AND " + "database:" + domain);
+        mltQueryModel.setMlt_fl(mltfields+",score");
         return solrCustomService.getSimilarResult("omics", mltQueryModel);
     }
 }
