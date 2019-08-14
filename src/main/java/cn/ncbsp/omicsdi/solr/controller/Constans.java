@@ -19,16 +19,22 @@ public class Constans {
         MASSIVE("Massive", "massive"),
         METABOLIGHTS("MetaboLights", "metabolights_dataset"),
         EGA("EGA", "ega"),
-        GPMDB("GPMDB", "gpmdb"),
+        ENA("ENA", "ena"),
+        EVA("EVA", "eva"),
+        GEO("GEO", "geo"),
+        NCBI("NCBI", "ncbi"),
+        dbGaP("dbGaP", "db_gap"),
+        GPMDB("GPMDB",  "gpmdb"),
         GNPS("GNPS", "gnps"),
         ARRAY_EXPRESS("ArrayExpress", "arrayexpress-repository"),
         METABOLOMEEXPRESS("MetabolomeExpress", "metabolome_express"),
         EXPRESSION_ATLAS("ExpressionAtlas", "atlas-experiments"),
         METABOLOMICSWORKBENCH("MetabolomicsWorkbench", "metabolomics_workbench"),
-        BIOMODELS("BioModels Database", "biomodels"),
-        LINCS("LINCS", "lincs"),
-        PAXDB("PAXDB", "paxdb"),
-        JPOST("JPOST Repository", "jpost");
+        BIOMODELS("BioModels Database","biomodels"),
+        BIOMODELS2("BioModels","biomodels"),
+        LINCS("LINCS","lincs"),
+        PAXDB("PAXDB","paxdb"),
+        JPOST("JPOST Repository","jpost");
 
         String databaseName;
         String solarName;

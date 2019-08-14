@@ -114,7 +114,7 @@ public class SolrEntry {
     List<String> secondaryAccession;
 
     @Field(value = "pubmed_title")
-    List<String> pubmedTitle;
+    String pubmedTitle;
 
     @Field(value = "pubmed_authors")
     List<String> pubmedAuthors;
@@ -514,11 +514,11 @@ news
         this.secondaryAccession = secondaryAccession;
     }
 
-    public List<String> getPubmedTitle() {
+    public String getPubmedTitle() {
         return pubmedTitle;
     }
 
-    public void setPubmedTitle(List<String> pubmedTitle) {
+    public void setPubmedTitle(String pubmedTitle) {
         this.pubmedTitle = pubmedTitle;
     }
 

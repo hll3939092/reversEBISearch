@@ -130,11 +130,9 @@
         </property>
     </bean>
 
-    <bean id="XMLResponseParser" class="org.apache.solr.client.solrj.impl.XMLResponseParser"></bean>
 
     <bean id="solrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
         <constructor-arg name="builder" ref="solrClientBuilder"></constructor-arg>
-        <property name="parser" ref="XMLResponseParser"></property>
     </bean>
 
     <bean id="solrClientBuilder" class="org.apache.solr.client.solrj.impl.HttpSolrClient.Builder">
@@ -152,9 +150,7 @@
     <!--<constructor-arg ref="solrServer" />-->
     <!--</bean>-->
 
-    <mongo:mongo-client
-            credentials="${ddi.mongo.app.user}:${ddi.mongo.app.password}@${ddi.mongo.app.authenticationDatabase}"
-            id="mongoClient" replica-set="localhost:27017">
+    <mongo:mongo-client id="mongoClient" host="1" port="1" credentials="1">
         <mongo:client-options connections-per-host="5"
                               threads-allowed-to-block-for-connection-multiplier="10"
                               connect-timeout="100000"
@@ -165,7 +161,7 @@
                               read-preference="PRIMARY_PREFERRED"/>
     </mongo:mongo-client>
 
-    <mongo:db-factory dbname="${ddi.mongo.app.db}" mongo-ref="mongoClient"/>
+    <mongo:db-factory dbname="ddi_db" mongo-ref="mongoClient"/>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
