@@ -41,7 +41,7 @@ public class AutocompleteServiceImpl implements IAutocompleteService {
             return suggestion;
         }).toArray(cn.ncbsp.omicsdi.solr.model.Suggestion[]::new);
         Suggestions suggestions = new Suggestions();
-        suggestions.setEntries(suggestionCollection);
+        suggestions.setSuggestions(suggestionCollection);
         return suggestions;
     }
 }

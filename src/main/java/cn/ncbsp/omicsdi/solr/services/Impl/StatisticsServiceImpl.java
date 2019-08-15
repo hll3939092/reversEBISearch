@@ -95,6 +95,13 @@ public class StatisticsServiceImpl implements IStatisticsService {
             IndexInfo[] indexInfos = new IndexInfo[]{numberOfEntries, lastModificationDate, releaseDate,
                     updateDate, url, indexSize, indexSizeB, hiddenDomain, dictionaryAvailability};
             domain.setIndexInfos(indexInfos);
+            Domain subDomain = new Domain();
+            subDomain.setId(domain.getId());
+            subDomain.setName(domain.getId());
+            subDomain.setDescription(domain.getId());
+
+
+            domain.setSubdomains(new Domain[]{subDomain});
             domains.add(domain);
         }
         Domain[] domainCo = new Domain[domains.size()];

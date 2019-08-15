@@ -14,17 +14,17 @@ import java.util.Arrays;
 public class TermResult {
 
     @JsonProperty("topTerms")
-    Term[] terms;
+    Term[] topTerms;
 
     @JsonProperty("totalTermCount")
     int totalTermCount;
 
-    public Term[] getTerms() {
-        return terms;
+    public Term[] getTopTerms() {
+        return topTerms;
     }
 
-    public void setTerms(Term[] terms) {
-        this.terms = terms;
+    public void setTopTerms(Term[] topTerms) {
+        this.topTerms = topTerms;
     }
 
     public int getTotalTermCount() {
@@ -38,7 +38,7 @@ public class TermResult {
     @Override
     public String toString() {
         return "TermResult{" +
-                "terms=" + Arrays.toString(terms) +
+                "terms=" + Arrays.toString(topTerms) +
                 ", totalTermCount=" + totalTermCount +
                 '}';
     }

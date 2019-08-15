@@ -28,7 +28,7 @@ public class Domain {
     FieldInfo[] fieldInfos;
 
     @JsonProperty("subdomains")
-    Domain[] subDomains = null;
+    Domain[] subdomains = null;
 
     public String getId() {
         return id;
@@ -70,11 +70,11 @@ public class Domain {
         this.fieldInfos = fieldInfos;
     }
 
-    public Domain[] getSubDomains() {
-        return subDomains;
+    public Domain[] getSubdomains() {
+        return subdomains;
     }
 
-    public void setSubDomains(Domain[] subDomains) {
-        this.subDomains = subDomains;
+    public void setSubdomains(Domain[] subdomains) {
+        this.subdomains = subdomains;
     }
 }

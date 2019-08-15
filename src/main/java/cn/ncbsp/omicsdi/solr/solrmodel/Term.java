@@ -14,7 +14,7 @@ public class Term {
     String text;
 
     @JsonProperty("docFreq")
-    String frequency;
+    String docFreq;
 
     public String getText() {
         return text;
@@ -24,19 +24,19 @@ public class Term {
         this.text = text;
     }
 
-    public String getFrequency() {
-        return frequency;
+    public String getDocFreq() {
+        return docFreq;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public void setDocFreq(String docFreq) {
+        this.docFreq = docFreq;
     }
 
     @Override
     public String toString() {
         return "Term{" +
                 "text='" + text + '\'' +
-                ", frequency='" + frequency + '\'' +
+                ", frequency='" + docFreq + '\'' +
                 '}';
     }
 }

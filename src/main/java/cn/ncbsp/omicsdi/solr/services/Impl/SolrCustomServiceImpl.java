@@ -79,7 +79,7 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
             return suggestion;
         }).toArray(cn.ncbsp.omicsdi.solr.model.Suggestion[]::new);
         Suggestions suggestionsCollection = new Suggestions();
-        suggestionsCollection.setEntries(suggestions);
+        suggestionsCollection.setSuggestions(suggestions);
         return suggestionsCollection;
 
     }
@@ -198,12 +198,13 @@ public class SolrCustomServiceImpl implements ISolrCustomService {
         Term[] terms = termMap.get(termFl).stream().map(x -> {
             Term term = new Term();
             term.setText(x.getTerm());
-            term.setFrequency(String.valueOf(x.getFrequency()));
+            term.setDocFreq(String.valueOf(x.getFrequency()));
             return term;
         }).toArray(Term[]::new);
 
         TermResult termResult = new TermResult();
-        termResult.setTerms(terms);
+        termResult.setTopTerms(terms);
+        //todo
         termResult.setTotalTermCount(0);
 
 

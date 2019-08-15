@@ -881,7 +881,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
 //        solrQuery.setFacet();
 
         Term term = new Term();
-        term.setFrequency("12323123");
+        term.setDocFreq("12323123");
         term.setText("asdfdfdsasdfdsa");
 
         Item item = new Item("namenamenamename");
@@ -1051,7 +1051,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
             return suggestion;
         }).toArray(Suggestion[]::new);
         Suggestions suggestionsCollection = new Suggestions();
-        suggestionsCollection.setEntries(suggestions);
+        suggestionsCollection.setSuggestions(suggestions);
 
 
         System.out.println("XXXXX");

@@ -13,13 +13,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Suggestions {
 
     @JsonProperty("suggestions")
-    Suggestion[] entries;
+    Suggestion[] suggestions;
 
-    public Suggestion[] getEntries() {
-        return entries;
+    public Suggestion[] getSuggestions() {
+        return suggestions;
     }
 
-    public void setEntries(Suggestion[] entries) {
-        this.entries = entries;
+    public void setSuggestions(Suggestion[] suggestions) {
+        this.suggestions = suggestions;
     }
 }
