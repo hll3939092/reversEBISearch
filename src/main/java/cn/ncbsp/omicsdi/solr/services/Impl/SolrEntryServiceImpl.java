@@ -4,6 +4,7 @@ import cn.ncbsp.omicsdi.solr.controller.Constans;
 import cn.ncbsp.omicsdi.solr.model.Database;
 import cn.ncbsp.omicsdi.solr.model.Entries;
 import cn.ncbsp.omicsdi.solr.model.Entry;
+import cn.ncbsp.omicsdi.solr.queryModel.FacetQueryModel;
 import cn.ncbsp.omicsdi.solr.queryModel.IQModel;
 import cn.ncbsp.omicsdi.solr.queryModel.QueryModel;
 import cn.ncbsp.omicsdi.solr.queryModel.SolrQueryBuilder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -216,6 +218,24 @@ public class SolrEntryServiceImpl implements ISolrEntryService {
                     facetValue.setCount(String.valueOf(z.getCount()));
                     return facetValue;
                 }).toArray(FacetValue[]::new);
+
+
+                if(iqModel instanceof FacetQueryModel) {
+                    FacetQueryModel facetQueryModel = (FacetQueryModel) iqModel;
+                    if ("TAXONOMY".equalsIgnoreCase(facetQueryModel.getFacet_field())) {
+                        List<NCBITaxonomy> ncbiTaxonomyList = getNCBITaxonomyData(Arrays.stream(facetValues).map(FacetValue::getLabel).toArray(String[]::new));
+                        Map<String, String> map = new ConcurrentHashMap<>();
+                        ncbiTaxonomyList.forEach(z -> map.put(z.getTaxId(), z.getNameTxt()));
+                        for (FacetValue facetValue : facetValues) {
+                            facetValue.setLabel(map.get(facetValue.getLabel()));
+                        }
+                    }
+                }
+
+
+                facet.setFacetValues(facetValues);
+                facet.setTotal(Math.toIntExact(x.getValues().stream().mapToLong(FacetField.Count::getCount).sum()));
+
                 facet.setFacetValues(facetValues);
                 return facet;
             }).toArray(Facet[]::new);

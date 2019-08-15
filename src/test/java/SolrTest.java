@@ -1092,9 +1092,9 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void fileSize() {
-        File file = new File("C:\\Users\\MS\\Desktop\\fileTest\\QQ视频20180821115305.mp4");
-        long l = file.length();
-        System.out.println(l);
+//        File file = new File("C:\\Users\\MS\\Desktop\\fileTest\\QQ视频20180821115305.mp4");
+//        long l = file.length();
+//        System.out.println(l);
     }
 
     @Test
@@ -1281,7 +1281,7 @@ public class SolrTest extends AbstractJUnit4SpringContextTests {
 
                 IndexInfo[] indexInfos = new IndexInfo[]{numberOfEntries, lastModificationDate, releaseDate,
                         updateDate, url, indexSize, indexSizeB, hiddenDomain, dictionaryAvailability};
-                domain.setIndexInfo(indexInfos);
+                domain.setIndexInfos(indexInfos);
                 domains.add(domain);
             }
             Domain[] domainCo = new Domain[domains.size()];

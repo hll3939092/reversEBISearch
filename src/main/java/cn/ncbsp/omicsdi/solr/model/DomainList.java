@@ -11,14 +11,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DomainList {
 
     @JsonProperty("domains")
-    public Domain[] list;
+    public Domain[] domains;
 
     public Domain[] getList() {
-        return list;
+        return domains;
     }
 
     public void setList(Domain[] list) {
-        this.list = list;
+        this.domains = list;
     }
 
 

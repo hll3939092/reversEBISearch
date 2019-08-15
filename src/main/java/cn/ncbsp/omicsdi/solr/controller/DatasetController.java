@@ -210,7 +210,7 @@ public class DatasetController {
             @RequestParam(value = "start", required = false, defaultValue = "0") int start,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size,
             @RequestParam(value = "facetcount", required = false, defaultValue = "20") int facetcount,
-            @RequestParam(value = "facetFields", required = false) String facetFields,
+            @RequestParam(value = "facetfields", required = false) String facetfields,
             @RequestParam(value = "sortedField", required = false) String sortedField,
             @RequestParam(value = "order", required = false, defaultValue = "ascending") String order,
             @RequestParam(value = "format", required = false, defaultValue = "JSON") String format
@@ -233,10 +233,10 @@ public class DatasetController {
         }
 
         facetQueryModel.setStart(String.valueOf(start));
-        facetQueryModel.setRows(String.valueOf(size));
+//        facetQueryModel.setRows(String.valueOf(size));
 
-        if(StringUtils.isNotBlank(facetFields)) {
-            facetQueryModel.setFacet_field(facetFields);
+        if(StringUtils.isNotBlank(facetfields)) {
+            facetQueryModel.setFacet_field(facetfields);
         }
         facetQueryModel.setFacet_limit(String.valueOf(facetcount));
 
@@ -367,6 +367,7 @@ public class DatasetController {
             @PathVariable(value = "domain") String domain,
             @PathVariable(value = "entryid") String entryid,
             @RequestParam(value = "mltfields", required = false, defaultValue = "") String mltfields,
+            @RequestParam(value = "fields", required = false, defaultValue = "") String fields,
             @RequestParam(value = "excludesets", required = false, defaultValue = "") String excludesets,
             @RequestParam(value = "entryattrs", required = false, defaultValue = "") String entryattrs,
             @RequestParam(value = "format", required = false, defaultValue = "") String format
@@ -374,7 +375,13 @@ public class DatasetController {
         MLTQueryModel mltQueryModel = new MLTQueryModel();
         mltQueryModel.setQ("id:" + entryid + " AND " + "database:" + domain);
         if(StringUtils.isNotBlank(mltfields)) {
-            mltQueryModel.setMlt_fl(mltfields+",score");
+            mltQueryModel.setMlt_fl(mltfields);
+        }
+        mltQueryModel.setSort("score desc");
+        if(StringUtils.isNotBlank(fields)) {
+            mltQueryModel.setFl(addDefaultFields(fields) +",score");
+        } else {
+            mltQueryModel.setFl(addDefaultFields(mltfields)+",score");
         }
         return solrCustomService.getSimilarResult(DEFAULT_SOLR_CORE, mltQueryModel);
     }

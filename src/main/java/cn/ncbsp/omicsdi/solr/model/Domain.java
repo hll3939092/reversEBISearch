@@ -22,7 +22,7 @@ public class Domain {
     String description = null;
 
     @JsonProperty("indexInfos")
-    IndexInfo[] indexInfo = null;
+    IndexInfo[] indexInfos = null;
 
     @JsonProperty("fieldInfos")
     FieldInfo[] fieldInfos;
@@ -54,12 +54,12 @@ public class Domain {
         this.description = description;
     }
 
-    public IndexInfo[] getIndexInfo() {
-        return indexInfo;
+    public IndexInfo[] getIndexInfos() {
+        return indexInfos;
     }
 
-    public void setIndexInfo(IndexInfo[] indexInfo) {
-        this.indexInfo = indexInfo;
+    public void setIndexInfos(IndexInfo[] indexInfos) {
+        this.indexInfos = indexInfos;
     }
 
     public FieldInfo[] getFieldInfos() {
